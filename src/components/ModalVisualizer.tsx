@@ -177,9 +177,31 @@ export function ModalVisualizer({
 
     return (
       <>
-        <ellipse cx={tonicNode.x} cy={tonicNode.y} rx={260} ry={220} fill="rgba(122,247,207,0.035)" />
-        <circle cx={tonicNode.x} cy={tonicNode.y} r={240} fill="rgba(122,247,207,0.05)" />
-        <circle cx={tonicNode.x} cy={tonicNode.y} r={176} fill="rgba(122,247,207,0.07)" />
+        <motion.ellipse
+          cx={tonicNode.x}
+          cy={tonicNode.y}
+          rx={260}
+          ry={220}
+          fill="rgba(122,247,207,0.035)"
+          animate={animations ? { rx: [248, 268, 248], ry: [212, 228, 212] } : undefined}
+          transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.circle
+          cx={tonicNode.x}
+          cy={tonicNode.y}
+          r={240}
+          fill="rgba(122,247,207,0.05)"
+          animate={animations ? { r: [228, 246, 228], opacity: [0.06, 0.11, 0.06] } : undefined}
+          transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.circle
+          cx={tonicNode.x}
+          cy={tonicNode.y}
+          r={176}
+          fill="rgba(122,247,207,0.07)"
+          animate={animations ? { r: [166, 184, 166], opacity: [0.08, 0.13, 0.08] } : undefined}
+          transition={{ duration: 2.9, repeat: Infinity, ease: "easeInOut" }}
+        />
         <circle cx={tonicNode.x} cy={tonicNode.y} r={116} fill="rgba(122,247,207,0.08)" />
         <path
           d={`M ${tonicNode.x - 220} ${tonicNode.y - 110} C ${tonicNode.x - 80} ${tonicNode.y - 210}, ${tonicNode.x + 60} ${tonicNode.y - 210}, ${tonicNode.x + 210} ${tonicNode.y - 90}`}
@@ -235,14 +257,14 @@ export function ModalVisualizer({
               <circle
                 cx={point.x}
                 cy={point.y}
-                r={isCenter ? 30 : 22}
+                r={isCenter ? 36 : 28}
                 fill={isCenter ? "rgba(141,247,198,0.2)" : "rgba(105,146,255,0.12)"}
                 stroke={isCenter ? "rgba(141,247,198,0.72)" : "rgba(105,146,255,0.42)"}
               />
-              <text x={point.x} y={point.y - 2} textAnchor="middle" fontSize={10} fill="#f8fbff">
+              <text x={point.x} y={point.y - 5} textAnchor="middle" fontSize={12} fill="#f8fbff">
                 {chord.numeral}
               </text>
-              <text x={point.x} y={point.y + 13} textAnchor="middle" fontSize={9} fill="#98a7d8">
+              <text x={point.x} y={point.y + 14} textAnchor="middle" fontSize={11} fill="#98a7d8">
                 {chord.root}
               </text>
             </g>
@@ -401,7 +423,7 @@ export function ModalVisualizer({
                 x={position.x}
                 y={position.y + 4}
                 textAnchor="middle"
-                fontSize={view === "harmony" ? 15 : 13}
+                fontSize={view === "harmony" ? 18 : 13}
                 fontWeight={700}
                 fill={inCollection ? "#f8fbff" : "#7080a8"}
               >
@@ -417,7 +439,7 @@ export function ModalVisualizer({
             x={position.x}
             y={position.y - 26}
             textAnchor="middle"
-            fontSize={view === "harmony" ? 13 : 11}
+            fontSize={view === "harmony" ? 16 : 11}
             fill="rgba(176,188,221,0.56)"
           >
             {index}

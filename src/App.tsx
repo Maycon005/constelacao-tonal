@@ -24,7 +24,7 @@ const DEFAULT_COMPARE: SelectionState = {
 function App() {
   const [selection, setSelection] = useState<SelectionState>(DEFAULT_SELECTION);
   const [compareSelection, setCompareSelection] = useState<SelectionState>(DEFAULT_COMPARE);
-  const [view, setView] = useState<ViewId>("orbit");
+  const [view, setView] = useState<ViewId>("gravity");
   const [compare, setCompare] = useState(true);
   const [animations, setAnimations] = useState(true);
   const [highlightCharacteristic, setHighlightCharacteristic] = useState(true);
@@ -128,7 +128,7 @@ function App() {
           onReset={() => {
             setSelection(DEFAULT_SELECTION);
             setCompareSelection(DEFAULT_COMPARE);
-            setView("orbit");
+            setView("gravity");
             setPinnedNote(null);
             setTooltip(null);
             setHoveredChord(null);

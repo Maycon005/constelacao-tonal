@@ -78,6 +78,10 @@ Veja `docs/architecture.md`.
 
 Veja `docs/prompt-master.md`.
 
+## Continuidade de contexto
+
+Veja `docs/continuity-summary.md`.
+
 ## Validacao realizada
 
 - `npm install`

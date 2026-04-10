@@ -1,4 +1,4 @@
-import { collectionModeSelections, sameCollection } from "../lib/music";
+import { sameCollection, selectionFromRelativeIndex } from "../lib/music";
 import type { ModalContext, SelectionState } from "../types/music";
 import { FAMILIES, NOTES } from "../data/modalFamilies";
 
@@ -19,7 +19,6 @@ export function ComparisonPanel({
 }: ComparisonPanelProps) {
   const shared = sameCollection(left, right);
   const compareModes = FAMILIES[compareSelection.family].modes;
-  const sharedRelativeModes = collectionModeSelections(selection);
 
   return (
     <section className="glass-panel rounded-[28px] p-4 md:p-5">
@@ -97,7 +96,9 @@ export function ComparisonPanel({
             step={1}
             value={compareSelection.modeIndex}
             onChange={(event) =>
-              onCompareSelectionChange(sharedRelativeModes[Number(event.target.value)])
+              onCompareSelectionChange(
+                selectionFromRelativeIndex(compareSelection, Number(event.target.value))
+              )
             }
           />
           <div className="mt-2 text-xs text-slate-400">
