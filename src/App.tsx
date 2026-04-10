@@ -1,7 +1,6 @@
 import { startTransition, useEffect, useState } from "react";
 import { ComparisonPanel } from "./components/ComparisonPanel";
 import { ControlBar } from "./components/ControlBar";
-import { GuidedTutorial } from "./components/GuidedTutorial";
 import { InfoPanel } from "./components/InfoPanel";
 import { ModalVisualizer } from "./components/ModalVisualizer";
 import { RelativeLab } from "./components/RelativeLab";
@@ -155,16 +154,6 @@ function App() {
           audioEnabled={audioEnabled}
           onEnableAudio={enableAudio}
           onPlayMode={handlePlayMode}
-        />
-
-        <GuidedTutorial
-          onApplyExample={(source, target) => {
-            setSelection(source);
-            setPairedSelection(target);
-            setCompareSelection(target);
-            setCompare(true);
-            setView("gravity");
-          }}
         />
 
         <div className="grid gap-5 xl:grid-cols-[1.55fr_0.85fr]">
