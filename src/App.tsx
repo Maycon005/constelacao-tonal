@@ -1,6 +1,7 @@
 import { startTransition, useEffect, useState } from "react";
 import { ComparisonPanel } from "./components/ComparisonPanel";
 import { ControlBar } from "./components/ControlBar";
+import { GuidedTutorial } from "./components/GuidedTutorial";
 import { InfoPanel } from "./components/InfoPanel";
 import { ModalVisualizer } from "./components/ModalVisualizer";
 import { RelativeLab } from "./components/RelativeLab";
@@ -29,6 +30,7 @@ const DEFAULT_COMPARE: SelectionState = {
 
 function App() {
   const [selection, setSelection] = useState<SelectionState>(DEFAULT_SELECTION);
+  const [pairedSelection, setPairedSelection] = useState<SelectionState>(DEFAULT_COMPARE);
   const [compareSelection, setCompareSelection] = useState<SelectionState>(DEFAULT_COMPARE);
   const [view, setView] = useState<ViewId>("gravity");
   const [compare, setCompare] = useState(true);
@@ -41,6 +43,7 @@ function App() {
   const [audioEnabled, setAudioEnabled] = useState(false);
 
   const context = buildModalContext(selection);
+  const pairedContext = buildModalContext(pairedSelection);
   const compareContext = buildModalContext(compareSelection);
 
   useEffect(() => {
@@ -82,7 +85,7 @@ function App() {
   const applyTopSelection = (next: SelectionState) => {
     startTransition(() => {
       setSelection(next);
-      setCompareSelection(featuredPairSelection(next));
+      setPairedSelection(featuredPairSelection(next));
     });
   };
 
@@ -140,6 +143,7 @@ function App() {
           onToggleCharacteristic={() => setHighlightCharacteristic((current) => !current)}
           onReset={() => {
             setSelection(DEFAULT_SELECTION);
+            setPairedSelection(DEFAULT_COMPARE);
             setCompareSelection(DEFAULT_COMPARE);
             setView("gravity");
             setPinnedNote(null);
@@ -153,9 +157,20 @@ function App() {
           onPlayMode={handlePlayMode}
         />
 
+        <GuidedTutorial
+          onApplyExample={(source, target) => {
+            setSelection(source);
+            setPairedSelection(target);
+            setCompareSelection(target);
+            setCompare(true);
+            setView("gravity");
+          }}
+        />
+
         <div className="grid gap-5 xl:grid-cols-[1.55fr_0.85fr]">
           <ModalVisualizer
             context={context}
+            pairedContext={pairedContext}
             compareContext={compareContext}
             compare={compare}
             view={view}
@@ -168,6 +183,10 @@ function App() {
             onPlayNote={handlePlayNote}
             onRelativeIndexChange={(modeIndex) =>
               applySelection(selectionFromRelativeIndex(selection, modeIndex))
+            }
+            compareSelection={compareSelection}
+            onCompareRelativeIndexChange={(modeIndex) =>
+              applyCompareSelection(selectionFromRelativeIndex(compareSelection, modeIndex))
             }
           />
 
@@ -184,10 +203,11 @@ function App() {
 
         <RelativeLab
           context={context}
+          pairedContext={pairedContext}
           selection={selection}
-          compareSelection={compareSelection}
+          pairedSelection={pairedSelection}
           onSelectionChange={applySelection}
-          onCompareSelectionChange={applyCompareSelection}
+          onPairedSelectionChange={setPairedSelection}
           onPlaySelection={handlePlaySelection}
         />
 

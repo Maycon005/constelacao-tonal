@@ -1,11 +1,13 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { functionColor, sameCollection } from "../lib/music";
-import type { ModalContext, TooltipState, ViewId } from "../types/music";
+import type { ModalContext, SelectionState, TooltipState, ViewId } from "../types/music";
 
 interface ModalVisualizerProps {
   context: ModalContext;
+  pairedContext: ModalContext;
   compareContext: ModalContext;
+  compareSelection: SelectionState;
   compare: boolean;
   view: ViewId;
   animations: boolean;
@@ -16,6 +18,7 @@ interface ModalVisualizerProps {
   onTooltipChange: (tooltip: TooltipState | null) => void;
   onPlayNote: (note: string) => void;
   onRelativeIndexChange: (modeIndex: number) => void;
+  onCompareRelativeIndexChange: (modeIndex: number) => void;
 }
 
 interface Position {
@@ -64,7 +67,9 @@ function innerHarmonyPositions() {
 
 export function ModalVisualizer({
   context,
+  pairedContext,
   compareContext,
+  compareSelection,
   compare,
   view,
   animations,
@@ -74,7 +79,8 @@ export function ModalVisualizer({
   onPinNote,
   onTooltipChange,
   onPlayNote,
-  onRelativeIndexChange
+  onRelativeIndexChange,
+  onCompareRelativeIndexChange
 }: ModalVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const outerPositions = positions();
@@ -280,24 +286,48 @@ export function ModalVisualizer({
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(88,221,255,0.09),transparent_58%)]" />
 
       <div className="relative z-10 mb-3 rounded-[24px] border border-cyan-400/15 bg-slate-950/45 px-4 py-3">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <div className="panel-label mb-1">Percurso Relativo sobre a roda</div>
-            <div className="text-sm text-slate-300">
-              Deslize aqui e observe a mesma constelacao ganhar outro centro tonal em tempo real.
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <div className="panel-label mb-1">Percurso do foco principal sobre a roda</div>
+              <div className="text-sm text-slate-300">
+                Deslize aqui e observe a mesma constelacao ganhar outro centro tonal em tempo real.
+              </div>
+            </div>
+            <div className="min-w-[320px] flex-1 lg:max-w-[520px]">
+              <input
+                className="w-full accent-cyan-400"
+                type="range"
+                min={0}
+                max={6}
+                step={1}
+                value={relativeIndex}
+                onChange={(event) => onRelativeIndexChange(Number(event.target.value))}
+              />
             </div>
           </div>
-          <div className="min-w-[320px] flex-1 lg:max-w-[520px]">
-            <input
-              className="w-full accent-cyan-400"
-              type="range"
-              min={0}
-              max={6}
-              step={1}
-              value={relativeIndex}
-              onChange={(event) => onRelativeIndexChange(Number(event.target.value))}
-            />
-          </div>
+
+          {compare ? (
+            <div className="flex flex-col gap-3 border-t border-white/10 pt-3 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <div className="panel-label mb-1 text-fuchsia-200/80">Comparador livre sobre a roda</div>
+                <div className="text-sm text-slate-300">
+                  {compareContext.family.name} · {compareSelection.tonic} {compareContext.mode.name}
+                </div>
+              </div>
+              <div className="min-w-[320px] flex-1 lg:max-w-[520px]">
+                <input
+                  className="w-full accent-fuchsia-400"
+                  type="range"
+                  min={0}
+                  max={6}
+                  step={1}
+                  value={compareSelection.modeIndex}
+                  onChange={(event) => onCompareRelativeIndexChange(Number(event.target.value))}
+                />
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
 
@@ -345,6 +375,7 @@ export function ModalVisualizer({
             stroke={collectionShared ? "rgba(203,124,255,0.78)" : "rgba(255,139,199,0.74)"}
             strokeDasharray="8 6"
             strokeWidth={2.4}
+            filter="url(#soft-glow)"
           />
         ) : null}
 
@@ -484,6 +515,30 @@ export function ModalVisualizer({
                   ? "O campo harmonico traduz a colecao em centros de funcao."
                   : "A constelacao fixa ajuda a ver a relatividade modal com os olhos."}
           </div>
+        </div>
+      </div>
+
+      {compare ? (
+        <div className="relative z-10 mt-3 grid gap-3 lg:grid-cols-2">
+          <div className="data-chip border-cyan-400/25">
+            <div className="panel-label mb-1 text-cyan-200/80">Camada principal</div>
+            <div>{context.tonic} {context.mode.name} - {context.modeNotes.join(" - ")}</div>
+          </div>
+          <div className="data-chip border-fuchsia-400/25">
+            <div className="panel-label mb-1 text-fuchsia-200/80">Comparador livre</div>
+            <div>{compareContext.tonic} {compareContext.mode.name} - {compareContext.modeNotes.join(" - ")}</div>
+          </div>
+        </div>
+      ) : null}
+
+      <div className="relative z-10 mt-3 grid gap-3 lg:grid-cols-2">
+        <div className="data-chip border-cyan-400/20">
+          <div className="panel-label mb-1 text-cyan-200/80">Par de destaque da colecao</div>
+          <div>{pairedContext.tonic} {pairedContext.mode.name} - {pairedContext.modeNotes.join(" - ")}</div>
+        </div>
+        <div className="data-chip">
+          <div className="panel-label mb-1">Legenda visual</div>
+          <div>Linha solida azul = foco principal. Traco magenta = comparador livre.</div>
         </div>
       </div>
     </section>

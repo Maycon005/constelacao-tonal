@@ -4,19 +4,21 @@ import type { ModalContext, SelectionState } from "../types/music";
 
 interface RelativeLabProps {
   context: ModalContext;
+  pairedContext: ModalContext;
   selection: SelectionState;
-  compareSelection: SelectionState;
+  pairedSelection: SelectionState;
   onSelectionChange: (next: SelectionState) => void;
-  onCompareSelectionChange: (next: SelectionState) => void;
+  onPairedSelectionChange: (next: SelectionState) => void;
   onPlaySelection: (selection: SelectionState) => void;
 }
 
 export function RelativeLab({
   context,
+  pairedContext,
   selection,
-  compareSelection,
+  pairedSelection,
   onSelectionChange,
-  onCompareSelectionChange,
+  onPairedSelectionChange,
   onPlaySelection
 }: RelativeLabProps) {
   const relatives = collectionModeSelections(selection);
@@ -35,7 +37,7 @@ export function RelativeLab({
           </div>
 
           <div className="rounded-[24px] border border-cyan-400/15 bg-cyan-400/5 p-4">
-            <div className="panel-label mb-1">Modo A pela mesma colecao</div>
+            <div className="panel-label mb-1">Percurso do foco principal na mesma colecao</div>
             <div className="mb-3 text-sm text-slate-300">
               Percorra os 7 modos da colecao {context.collectionNotes.join(" - ")}.
             </div>
@@ -49,17 +51,19 @@ export function RelativeLab({
               onChange={(event) => onSelectionChange(relatives[Number(event.target.value)])}
             />
             <div className="mt-3 flex items-center justify-between text-xs text-slate-400">
-              <span>Atual: {selection.tonic} {context.mode.name}</span>
+              <span>
+                Atual: {selection.tonic} {context.mode.name} - {context.modeNotes.join(" - ")}
+              </span>
               <button className="soft-button px-3 py-1 text-xs" onClick={() => onPlaySelection(selection)}>
-                Ouvir modo A
+                Ouvir foco principal
               </button>
             </div>
           </div>
 
           <div className="rounded-[24px] border border-fuchsia-400/15 bg-fuchsia-400/5 p-4">
-            <div className="panel-label mb-1">Modo B pela mesma colecao</div>
+            <div className="panel-label mb-1">Par de destaque da mesma colecao</div>
             <div className="mb-3 text-sm text-slate-300">
-              Controle a comparacao pela mesma colecao para enxergar o deslocamento da gravidade tonal.
+              Este trilho mostra um segundo modo da mesma colecao para tornar o contraste mais legivel.
             </div>
             <input
               className="w-full"
@@ -67,13 +71,15 @@ export function RelativeLab({
               min={0}
               max={6}
               step={1}
-              value={compareSelection.modeIndex}
-              onChange={(event) => onCompareSelectionChange(relatives[Number(event.target.value)])}
+              value={pairedSelection.modeIndex}
+              onChange={(event) => onPairedSelectionChange(relatives[Number(event.target.value)])}
             />
             <div className="mt-3 flex items-center justify-between text-xs text-slate-400">
-              <span>Comparando: {compareSelection.tonic}</span>
-              <button className="soft-button px-3 py-1 text-xs" onClick={() => onPlaySelection(compareSelection)}>
-                Ouvir modo B
+              <span>
+                Destaque atual: {pairedSelection.tonic} {pairedContext.mode.name} - {pairedContext.modeNotes.join(" - ")}
+              </span>
+              <button className="soft-button px-3 py-1 text-xs" onClick={() => onPlaySelection(pairedSelection)}>
+                Ouvir destaque
               </button>
             </div>
           </div>

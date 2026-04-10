@@ -96,6 +96,14 @@ export function InfoPanel({
         </section>
 
         <section className="rounded-[24px] border border-white/10 bg-slate-950/45 p-4">
+          <div className="panel-label mb-2">Escala do modo atual</div>
+          <div className="text-sm text-slate-100">{context.modeNotes.join(" - ")}</div>
+          <div className="mt-2 text-sm text-slate-300">
+            Mesmas notas da colecao compartilhada, mas ordenadas a partir de {context.tonic}.
+          </div>
+        </section>
+
+        <section className="rounded-[24px] border border-white/10 bg-slate-950/45 p-4">
           <div className="panel-label mb-2">Colecao compartilhada</div>
           <div className="text-sm text-slate-100">{context.collectionNotes.join(" - ")}</div>
           <div className="mt-2 text-sm text-slate-300">

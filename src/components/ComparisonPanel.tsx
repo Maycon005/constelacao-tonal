@@ -24,7 +24,7 @@ export function ComparisonPanel({
     <section className="glass-panel rounded-[28px] p-4 md:p-5">
       <div className="flex flex-col gap-4">
         <div>
-          <p className="panel-label mb-2">Modo Comparacao</p>
+          <p className="panel-label mb-2">Comparacao Livre</p>
           <div className="rounded-[24px] border border-cyan-400/20 bg-cyan-400/5 p-4 text-sm text-slate-200">
             {shared
               ? "Mesma colecao detectada: a forma permanece, mas a hierarquia muda."
@@ -87,7 +87,7 @@ export function ComparisonPanel({
         </div>
 
         <div className="rounded-[24px] border border-fuchsia-400/15 bg-fuchsia-400/5 p-4">
-          <div className="panel-label mb-1">Slider rapido do modo B</div>
+          <div className="panel-label mb-1">Slider rapido de comparacao</div>
           <input
             className="w-full accent-fuchsia-400"
             type="range"
@@ -102,7 +102,7 @@ export function ComparisonPanel({
             }
           />
           <div className="mt-2 text-xs text-slate-400">
-            Arraste para reapontar o centro tonal do modo B rapidamente.
+            Arraste livremente para escolher o comparativo que deve aparecer na roda e no painel.
           </div>
         </div>
 
@@ -111,12 +111,13 @@ export function ComparisonPanel({
             ({ title, context, tonic }) => (
               <div key={title} className="rounded-[24px] border border-white/10 bg-slate-950/45 p-4">
                 <div className="panel-label mb-2">{title}</div>
-                <div className="text-lg font-semibold text-white">
-                  {tonic} {context.mode.name}
-                </div>
-                <div className="mt-2 text-sm text-slate-300">Intervalos: {context.intervalLabels.join(" - ")}</div>
-                <div className="mt-2 text-sm text-slate-300">Grau caracteristico: {context.mode.characteristic}</div>
-                <div className="mt-2 text-sm text-slate-300">Sensacao: {context.mode.mood}</div>
+              <div className="text-lg font-semibold text-white">
+                {tonic} {context.mode.name}
+              </div>
+              <div className="mt-2 text-sm text-slate-300">Escala: {context.modeNotes.join(" - ")}</div>
+              <div className="mt-2 text-sm text-slate-300">Intervalos: {context.intervalLabels.join(" - ")}</div>
+              <div className="mt-2 text-sm text-slate-300">Grau caracteristico: {context.mode.characteristic}</div>
+              <div className="mt-2 text-sm text-slate-300">Sensacao: {context.mode.mood}</div>
                 <div className="mt-2 text-sm text-slate-300">Centro de repouso: {context.tonic}</div>
               </div>
             )
