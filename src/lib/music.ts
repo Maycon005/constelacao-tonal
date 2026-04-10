@@ -246,6 +246,37 @@ export function relativeMinorSelection(selection: SelectionState): SelectionStat
   };
 }
 
+export function featuredPairSelection(selection: SelectionState): SelectionState {
+  const collection = collectionForSelection(selection).collectionNotes;
+
+  if (selection.family === "major") {
+    const context = buildModalContext(selection);
+    const hasMinorThird = context.intervalLabels[2] === "b3";
+    const targetModeIndex = selection.modeIndex === 0 ? 5 : selection.modeIndex === 5 ? 0 : hasMinorThird ? 0 : 5;
+    return {
+      family: selection.family,
+      tonic: collection[targetModeIndex],
+      modeIndex: targetModeIndex
+    };
+  }
+
+  if (selection.family === "harmonicMinor") {
+    const targetModeIndex = selection.modeIndex === 0 ? 4 : 0;
+    return {
+      family: selection.family,
+      tonic: collection[targetModeIndex],
+      modeIndex: targetModeIndex
+    };
+  }
+
+  const targetModeIndex = selection.modeIndex === 0 ? 3 : 0;
+  return {
+    family: selection.family,
+    tonic: collection[targetModeIndex],
+    modeIndex: targetModeIndex
+  };
+}
+
 export function midiFromNote(note: string, octave = 4) {
   return 12 * (octave + 1) + noteToPc(note);
 }

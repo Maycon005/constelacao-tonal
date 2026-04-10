@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { collectionModeSelections, relativeMinorSelection } from "../lib/music";
+import { collectionModeSelections, featuredPairSelection } from "../lib/music";
 import type { ModalContext, SelectionState } from "../types/music";
 
 interface RelativeLabProps {
@@ -20,7 +20,7 @@ export function RelativeLab({
   onPlaySelection
 }: RelativeLabProps) {
   const relatives = collectionModeSelections(selection);
-  const relativeMinor = relativeMinorSelection(selection);
+  const featuredPair = featuredPairSelection(selection);
 
   return (
     <section className="glass-panel rounded-[28px] p-4 md:p-5">
@@ -84,13 +84,13 @@ export function RelativeLab({
               Par de destaque nesta colecao:{" "}
               <button
                 className="font-medium text-cyan-200 underline decoration-cyan-400/40 underline-offset-4"
-                onClick={() => onSelectionChange(relativeMinor)}
+                onClick={() => onSelectionChange(featuredPair)}
               >
-                {relativeMinor.tonic} {context.family.modes[relativeMinor.modeIndex].name}
+                {featuredPair.tonic} {context.family.modes[featuredPair.modeIndex].name}
               </button>
             </div>
             <div className="mt-2 text-xs text-slate-400">
-              Na familia maior, isso enfatiza a ponte Jonio/Eolio. Em outras familias, aponta para o eixo principal da colecao.
+              O alvo destacado busca o contraste pedagogico mais forte dentro da mesma colecao.
             </div>
           </div>
         </div>

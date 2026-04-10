@@ -8,9 +8,9 @@ import { Tooltip } from "./components/Tooltip";
 import { playChord, playModeSweep, playNote, playProgression } from "./lib/audio";
 import {
   buildModalContext,
+  featuredPairSelection,
   nextRelativeSelection,
   progressionPlayback,
-  relativeMinorSelection,
   selectionFromRelativeIndex
 } from "./lib/music";
 import type { HarmonicChord, SelectionState, TooltipState, ViewId } from "./types/music";
@@ -74,9 +74,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (selection.family !== "major" || selection.modeIndex !== 0) return;
-
-    const featuredPair = relativeMinorSelection(selection);
+    const featuredPair = featuredPairSelection(selection);
     setCompareSelection((current) => {
       if (
         current.family === featuredPair.family &&
