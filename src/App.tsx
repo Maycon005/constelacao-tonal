@@ -211,8 +211,18 @@ function App() {
         ) : null}
 
         <footer className="glass-panel rounded-[28px] px-5 py-4 text-sm text-slate-300">
-          <span className="text-slate-100">Constelacao Tonal</span> traduz relatividade modal em geometria,
-          gravidade, funcao e escuta. O desenho pode permanecer identico enquanto a percepcao harmonica muda profundamente.
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <p className="max-w-4xl">
+              <span className="text-slate-100">Constelacao Tonal</span> traduz relatividade modal em geometria,
+              gravidade, funcao e escuta. O desenho pode permanecer identico enquanto a percepcao harmonica muda profundamente.
+            </p>
+
+            <div className="inline-flex items-center gap-3 self-start rounded-full border border-cyan-400/20 bg-slate-950/55 px-4 py-2 text-xs uppercase tracking-[0.28em] text-slate-300 shadow-[0_0_30px_rgba(34,211,238,0.08)]">
+              <span className="text-white">By Dj VRUM</span>
+              <span className="h-1 w-1 rounded-full bg-cyan-300/80" />
+              <span className="text-cyan-200">para Artistas do Futuro</span>
+            </div>
+          </div>
         </footer>
       </div>
 
