@@ -73,23 +73,16 @@ function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
-  useEffect(() => {
-    const featuredPair = featuredPairSelection(selection);
-    setCompareSelection((current) => {
-      if (
-        current.family === featuredPair.family &&
-        current.tonic === featuredPair.tonic &&
-        current.modeIndex === featuredPair.modeIndex
-      ) {
-        return current;
-      }
-      return featuredPair;
-    });
-  }, [selection.family, selection.modeIndex, selection.tonic]);
-
   const applySelection = (next: SelectionState) => {
     startTransition(() => {
       setSelection(next);
+    });
+  };
+
+  const applyTopSelection = (next: SelectionState) => {
+    startTransition(() => {
+      setSelection(next);
+      setCompareSelection(featuredPairSelection(next));
     });
   };
 
@@ -134,7 +127,7 @@ function App() {
       <div className="mx-auto flex max-w-[1920px] flex-col gap-5">
         <ControlBar
           selection={selection}
-          onSelectionChange={applySelection}
+          onSelectionChange={applyTopSelection}
           view={view}
           onViewChange={setView}
           animations={animations}
