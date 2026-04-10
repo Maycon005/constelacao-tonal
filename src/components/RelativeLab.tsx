@@ -81,13 +81,16 @@ export function RelativeLab({
           <div className="rounded-[24px] border border-white/10 bg-slate-950/45 p-4">
             <div className="panel-label mb-1">Atalho didatico</div>
             <div className="text-sm text-slate-300">
-              Relativo de destaque nesta familia:{" "}
+              Par de destaque nesta colecao:{" "}
               <button
                 className="font-medium text-cyan-200 underline decoration-cyan-400/40 underline-offset-4"
                 onClick={() => onSelectionChange(relativeMinor)}
               >
                 {relativeMinor.tonic} {context.family.modes[relativeMinor.modeIndex].name}
               </button>
+            </div>
+            <div className="mt-2 text-xs text-slate-400">
+              Na familia maior, isso enfatiza a ponte Jonio/Eolio. Em outras familias, aponta para o eixo principal da colecao.
             </div>
           </div>
         </div>

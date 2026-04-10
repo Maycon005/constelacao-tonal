@@ -5,6 +5,7 @@ import type {
   FunctionKind,
   HarmonicChord,
   ModalContext,
+  ProgressionPlayback,
   SelectionState
 } from "../types/music";
 
@@ -229,9 +230,15 @@ export function collectionModeSelections(selection: SelectionState): SelectionSt
 }
 
 export function relativeMinorSelection(selection: SelectionState): SelectionState {
-  const family = FAMILIES[selection.family];
   const collection = collectionForSelection(selection).collectionNotes;
-  const targetModeIndex = family.id === "major" ? 5 : 0;
+  let targetModeIndex = 0;
+
+  if (selection.family === "major") {
+    if (selection.modeIndex === 0) targetModeIndex = 5;
+    else if (selection.modeIndex === 5) targetModeIndex = 0;
+    else targetModeIndex = 0;
+  }
+
   return {
     family: selection.family,
     tonic: collection[targetModeIndex],
@@ -241,4 +248,32 @@ export function relativeMinorSelection(selection: SelectionState): SelectionStat
 
 export function midiFromNote(note: string, octave = 4) {
   return 12 * (octave + 1) + noteToPc(note);
+}
+
+function romanIndex(token: string) {
+  const match = token.match(/(VII|VI|IV|V|III|II|I)/);
+  if (!match) return -1;
+  const table: Record<string, number> = {
+    I: 0,
+    II: 1,
+    III: 2,
+    IV: 3,
+    V: 4,
+    VI: 5,
+    VII: 6
+  };
+  return table[match[1]];
+}
+
+export function progressionPlayback(context: ModalContext, progression: string): ProgressionPlayback {
+  const tokens = progression.split(" - ").map((token) => token.trim());
+  const chords = tokens
+    .map((token) => romanIndex(token))
+    .filter((index) => index >= 0)
+    .map((index) => context.tetrads[index]);
+
+  return {
+    label: progression,
+    chords
+  };
 }

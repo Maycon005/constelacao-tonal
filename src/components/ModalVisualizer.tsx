@@ -11,9 +11,11 @@ interface ModalVisualizerProps {
   animations: boolean;
   highlightCharacteristic: boolean;
   pinnedNote: string | null;
+  relativeIndex: number;
   onPinNote: (note: string | null) => void;
   onTooltipChange: (tooltip: TooltipState | null) => void;
   onPlayNote: (note: string) => void;
+  onRelativeIndexChange: (modeIndex: number) => void;
 }
 
 interface Position {
@@ -68,9 +70,11 @@ export function ModalVisualizer({
   animations,
   highlightCharacteristic,
   pinnedNote,
+  relativeIndex,
   onPinNote,
   onTooltipChange,
-  onPlayNote
+  onPlayNote,
+  onRelativeIndexChange
 }: ModalVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const outerPositions = positions();
@@ -173,8 +177,22 @@ export function ModalVisualizer({
 
     return (
       <>
+        <ellipse cx={tonicNode.x} cy={tonicNode.y} rx={260} ry={220} fill="rgba(122,247,207,0.035)" />
         <circle cx={tonicNode.x} cy={tonicNode.y} r={240} fill="rgba(122,247,207,0.05)" />
         <circle cx={tonicNode.x} cy={tonicNode.y} r={176} fill="rgba(122,247,207,0.07)" />
+        <circle cx={tonicNode.x} cy={tonicNode.y} r={116} fill="rgba(122,247,207,0.08)" />
+        <path
+          d={`M ${tonicNode.x - 220} ${tonicNode.y - 110} C ${tonicNode.x - 80} ${tonicNode.y - 210}, ${tonicNode.x + 60} ${tonicNode.y - 210}, ${tonicNode.x + 210} ${tonicNode.y - 90}`}
+          fill="none"
+          stroke="rgba(122,247,207,0.10)"
+          strokeWidth={1.4}
+        />
+        <path
+          d={`M ${tonicNode.x - 210} ${tonicNode.y + 90} C ${tonicNode.x - 30} ${tonicNode.y + 200}, ${tonicNode.x + 100} ${tonicNode.y + 190}, ${tonicNode.x + 220} ${tonicNode.y + 70}`}
+          fill="none"
+          stroke="rgba(122,247,207,0.08)"
+          strokeWidth={1.2}
+        />
         {context.collectionPcs
           .filter((pc) => pc !== context.tonicPc)
           .map((pc) => {
@@ -224,7 +242,7 @@ export function ModalVisualizer({
               <text x={point.x} y={point.y - 2} textAnchor="middle" fontSize={10} fill="#f8fbff">
                 {chord.numeral}
               </text>
-              <text x={point.x} y={point.y + 12} textAnchor="middle" fontSize={8} fill="#98a7d8">
+              <text x={point.x} y={point.y + 13} textAnchor="middle" fontSize={9} fill="#98a7d8">
                 {chord.root}
               </text>
             </g>
@@ -238,6 +256,28 @@ export function ModalVisualizer({
     <section className="glass-panel relative overflow-hidden rounded-[32px] p-4">
       <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 h-full w-full opacity-85" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(88,221,255,0.09),transparent_58%)]" />
+
+      <div className="relative z-10 mb-3 rounded-[24px] border border-cyan-400/15 bg-slate-950/45 px-4 py-3">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <div className="panel-label mb-1">Percurso Relativo sobre a roda</div>
+            <div className="text-sm text-slate-300">
+              Deslize aqui e observe a mesma constelacao ganhar outro centro tonal em tempo real.
+            </div>
+          </div>
+          <div className="min-w-[320px] flex-1 lg:max-w-[520px]">
+            <input
+              className="w-full accent-cyan-400"
+              type="range"
+              min={0}
+              max={6}
+              step={1}
+              value={relativeIndex}
+              onChange={(event) => onRelativeIndexChange(Number(event.target.value))}
+            />
+          </div>
+        </div>
+      </div>
 
       <motion.svg
         viewBox={`40 40 920 920`}
@@ -361,7 +401,7 @@ export function ModalVisualizer({
                 x={position.x}
                 y={position.y + 4}
                 textAnchor="middle"
-                fontSize={13}
+                fontSize={view === "harmony" ? 15 : 13}
                 fontWeight={700}
                 fill={inCollection ? "#f8fbff" : "#7080a8"}
               >
@@ -377,7 +417,7 @@ export function ModalVisualizer({
             x={position.x}
             y={position.y - 26}
             textAnchor="middle"
-            fontSize={10}
+            fontSize={view === "harmony" ? 13 : 11}
             fill="rgba(176,188,221,0.56)"
           >
             {index}

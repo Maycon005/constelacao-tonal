@@ -16,7 +16,6 @@ interface ControlBarProps {
   highlightCharacteristic: boolean;
   onToggleCharacteristic: () => void;
   onReset: () => void;
-  onRelativeModeSlide: (modeIndex: number) => void;
   audioEnabled: boolean;
   onEnableAudio: () => void;
   onPlayMode: () => void;
@@ -36,7 +35,6 @@ export function ControlBar({
   highlightCharacteristic,
   onToggleCharacteristic,
   onReset,
-  onRelativeModeSlide,
   audioEnabled,
   onEnableAudio,
   onPlayMode
@@ -65,7 +63,7 @@ export function ControlBar({
           </div>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-7">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
           <label className="flex flex-col gap-1">
             <span className="panel-label">Familia</span>
             <select
@@ -117,19 +115,6 @@ export function ControlBar({
                 </option>
               ))}
             </select>
-          </label>
-
-          <label className="flex flex-col gap-2 xl:col-span-2">
-            <span className="panel-label">Percurso Relativo</span>
-            <input
-              className="accent-cyan-400"
-              type="range"
-              min={0}
-              max={6}
-              step={1}
-              value={selection.modeIndex}
-              onChange={(event) => onRelativeModeSlide(Number(event.target.value))}
-            />
           </label>
 
           <button className="soft-button flex items-center justify-center gap-2" onClick={onToggleAutoplay}>

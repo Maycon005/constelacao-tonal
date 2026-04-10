@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Play } from "lucide-react";
-import { functionColor } from "../lib/music";
+import { functionColor, progressionPlayback } from "../lib/music";
 import type { HarmonicChord, ModalContext } from "../types/music";
 
 interface InfoPanelProps {
@@ -10,6 +10,7 @@ interface InfoPanelProps {
   onChordHover: (chord: HarmonicChord | null) => void;
   onChordPlay: (chord: HarmonicChord) => void;
   onModePlay: () => void;
+  onProgressionPlay: (progression: string) => void;
 }
 
 export function InfoPanel({
@@ -18,9 +19,11 @@ export function InfoPanel({
   hoveredChord,
   onChordHover,
   onChordPlay,
-  onModePlay
+  onModePlay,
+  onProgressionPlay
 }: InfoPanelProps) {
   const pinnedDegree = pinnedNote ? context.degrees.find((degree) => degree.note === pinnedNote) : null;
+  const progressionPreview = hoveredChord ? null : progressionPlayback(context, context.progressions[0] ?? "");
 
   return (
     <aside className="glass-panel rounded-[28px] p-4 md:p-5">
@@ -150,11 +153,24 @@ export function InfoPanel({
           <div className="panel-label mb-2">Progressoes sugeridas</div>
           <div className="space-y-2 text-sm text-slate-200">
             {context.progressions.map((progression) => (
-              <div key={progression} className="rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-2">
-                {progression}
-              </div>
+              <button
+                key={progression}
+                className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-2 text-left transition hover:border-cyan-400/35 hover:bg-cyan-400/5"
+                onClick={() => onProgressionPlay(progression)}
+              >
+                <span>{progression}</span>
+                <span className="inline-flex items-center gap-1 text-xs text-cyan-200">
+                  <Play size={12} />
+                  Play
+                </span>
+              </button>
             ))}
           </div>
+          {progressionPreview ? (
+            <div className="mt-3 text-xs text-slate-400">
+              A reproducao usa as tetrades equivalentes do modo atual para tornar a progressao audivel.
+            </div>
+          ) : null}
         </section>
 
         <section className="rounded-[24px] border border-white/10 bg-slate-950/45 p-4">

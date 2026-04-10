@@ -5,8 +5,8 @@ import { InfoPanel } from "./components/InfoPanel";
 import { ModalVisualizer } from "./components/ModalVisualizer";
 import { RelativeLab } from "./components/RelativeLab";
 import { Tooltip } from "./components/Tooltip";
-import { playChord, playModeSweep, playNote } from "./lib/audio";
-import { buildModalContext, nextRelativeSelection, selectionFromRelativeIndex } from "./lib/music";
+import { playChord, playModeSweep, playNote, playProgression } from "./lib/audio";
+import { buildModalContext, nextRelativeSelection, progressionPlayback, selectionFromRelativeIndex } from "./lib/music";
 import type { HarmonicChord, SelectionState, TooltipState, ViewId } from "./types/music";
 
 const DEFAULT_SELECTION: SelectionState = {
@@ -99,6 +99,11 @@ function App() {
     await playChord(chord);
   };
 
+  const handlePlayProgression = async (progression: string) => {
+    setAudioEnabled(true);
+    await playProgression(progressionPlayback(context, progression));
+  };
+
   const handlePlayNote = async (note: string) => {
     setAudioEnabled(true);
     await playNote(note);
@@ -130,7 +135,6 @@ function App() {
             setAutoplay(false);
             setHighlightCharacteristic(true);
           }}
-          onRelativeModeSlide={(modeIndex) => applySelection(selectionFromRelativeIndex(selection, modeIndex))}
           audioEnabled={audioEnabled}
           onEnableAudio={enableAudio}
           onPlayMode={handlePlayMode}
@@ -145,9 +149,13 @@ function App() {
             animations={animations}
             highlightCharacteristic={highlightCharacteristic}
             pinnedNote={pinnedNote}
+            relativeIndex={selection.modeIndex}
             onPinNote={setPinnedNote}
             onTooltipChange={setTooltip}
             onPlayNote={handlePlayNote}
+            onRelativeIndexChange={(modeIndex) =>
+              applySelection(selectionFromRelativeIndex(selection, modeIndex))
+            }
           />
 
           <InfoPanel
@@ -157,6 +165,7 @@ function App() {
             onChordHover={setHoveredChord}
             onChordPlay={handlePlayChord}
             onModePlay={handlePlayMode}
+            onProgressionPlay={handlePlayProgression}
           />
         </div>
 

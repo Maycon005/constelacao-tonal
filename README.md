@@ -10,7 +10,7 @@ Aplicacao interativa premium para estudar modos gregos, menor harmonica e menor 
 - laboratorio de relativos com slider para os 7 modos da mesma colecao
 - autoplay modal
 - campo harmonico em triades e tetrades
-- audio Web Audio para ouvir notas, modos e acordes
+- audio Web Audio para ouvir notas, modos, acordes e progressoes
 
 ## Stack
 
@@ -73,6 +73,10 @@ No Vercel, isso atualiza automaticamente. No GitHub Pages, a action tambem rebui
 ## Arquitetura curta
 
 Veja `docs/architecture.md`.
+
+## Prompt master
+
+Veja `docs/prompt-master.md`.
 
 ## Validacao realizada
 

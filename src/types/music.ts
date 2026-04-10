@@ -71,6 +71,11 @@ export interface ModalContext {
   relativeMinor: string;
 }
 
+export interface ProgressionPlayback {
+  label: string;
+  chords: HarmonicChord[];
+}
+
 export interface SelectionState {
   family: FamilyId;
   tonic: string;
