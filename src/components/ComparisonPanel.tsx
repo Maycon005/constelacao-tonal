@@ -24,11 +24,11 @@ export function ComparisonPanel({
     <section className="glass-panel rounded-[28px] p-4 md:p-5">
       <div className="flex flex-col gap-4">
         <div>
-          <p className="panel-label mb-2">Modo Comparação</p>
+          <p className="panel-label mb-2">Modo Comparacao</p>
           <div className="rounded-[24px] border border-cyan-400/20 bg-cyan-400/5 p-4 text-sm text-slate-200">
             {shared
-              ? "Mesma coleção detectada: a forma permanece, mas a hierarquia muda."
-              : "Coleções diferentes: aqui a própria geometria já muda junto com a gravidade tonal."}
+              ? "Mesma colecao detectada: a forma permanece, mas a hierarquia muda."
+              : "Colecoes diferentes: aqui a propria geometria ja muda junto com a gravidade tonal."}
           </div>
         </div>
 
@@ -86,6 +86,27 @@ export function ComparisonPanel({
           </select>
         </div>
 
+        <div className="rounded-[24px] border border-fuchsia-400/15 bg-fuchsia-400/5 p-4">
+          <div className="panel-label mb-1">Slider rapido do modo B</div>
+          <input
+            className="w-full accent-fuchsia-400"
+            type="range"
+            min={0}
+            max={6}
+            step={1}
+            value={compareSelection.modeIndex}
+            onChange={(event) =>
+              onCompareSelectionChange({
+                ...compareSelection,
+                modeIndex: Number(event.target.value)
+              })
+            }
+          />
+          <div className="mt-2 text-xs text-slate-400">
+            Arraste para reapontar o centro tonal do modo B rapidamente.
+          </div>
+        </div>
+
         <div className="grid gap-4 xl:grid-cols-2">
           {[{ title: "Modo A", context: left, tonic: selection.tonic }, { title: "Modo B", context: right, tonic: compareSelection.tonic }].map(
             ({ title, context, tonic }) => (
@@ -95,8 +116,8 @@ export function ComparisonPanel({
                   {tonic} {context.mode.name}
                 </div>
                 <div className="mt-2 text-sm text-slate-300">Intervalos: {context.intervalLabels.join(" - ")}</div>
-                <div className="mt-2 text-sm text-slate-300">Grau característico: {context.mode.characteristic}</div>
-                <div className="mt-2 text-sm text-slate-300">Sensação: {context.mode.mood}</div>
+                <div className="mt-2 text-sm text-slate-300">Grau caracteristico: {context.mode.characteristic}</div>
+                <div className="mt-2 text-sm text-slate-300">Sensacao: {context.mode.mood}</div>
                 <div className="mt-2 text-sm text-slate-300">Centro de repouso: {context.tonic}</div>
               </div>
             )

@@ -3,7 +3,9 @@ import { ComparisonPanel } from "./components/ComparisonPanel";
 import { ControlBar } from "./components/ControlBar";
 import { InfoPanel } from "./components/InfoPanel";
 import { ModalVisualizer } from "./components/ModalVisualizer";
+import { RelativeLab } from "./components/RelativeLab";
 import { Tooltip } from "./components/Tooltip";
+import { playChord, playModeSweep, playNote } from "./lib/audio";
 import { buildModalContext, nextRelativeSelection, selectionFromRelativeIndex } from "./lib/music";
 import type { HarmonicChord, SelectionState, TooltipState, ViewId } from "./types/music";
 
@@ -30,6 +32,7 @@ function App() {
   const [tooltip, setTooltip] = useState<TooltipState | null>(null);
   const [hoveredChord, setHoveredChord] = useState<HarmonicChord | null>(null);
   const [autoplay, setAutoplay] = useState(false);
+  const [audioEnabled, setAudioEnabled] = useState(false);
 
   const context = buildModalContext(selection);
   const compareContext = buildModalContext(compareSelection);
@@ -39,12 +42,18 @@ function App() {
 
     const timer = window.setInterval(() => {
       startTransition(() => {
-        setSelection((current) => nextRelativeSelection(current));
+        setSelection((current) => {
+          const next = nextRelativeSelection(current);
+          if (audioEnabled) {
+            void playModeSweep(buildModalContext(next));
+          }
+          return next;
+        });
       });
     }, animations ? 1800 : 1250);
 
     return () => window.clearInterval(timer);
-  }, [autoplay, animations]);
+  }, [autoplay, animations, audioEnabled]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -70,9 +79,34 @@ function App() {
     });
   };
 
+  const enableAudio = async () => {
+    setAudioEnabled(true);
+    await playModeSweep(context);
+  };
+
+  const handlePlayMode = async () => {
+    setAudioEnabled(true);
+    await playModeSweep(context);
+  };
+
+  const handlePlaySelection = async (target: SelectionState) => {
+    setAudioEnabled(true);
+    await playModeSweep(buildModalContext(target));
+  };
+
+  const handlePlayChord = async (chord: HarmonicChord) => {
+    setAudioEnabled(true);
+    await playChord(chord);
+  };
+
+  const handlePlayNote = async (note: string) => {
+    setAudioEnabled(true);
+    await playNote(note);
+  };
+
   return (
     <div className="relative min-h-screen px-4 py-4 md:px-6 md:py-6">
-      <div className="mx-auto flex max-w-[1800px] flex-col gap-5">
+      <div className="mx-auto flex max-w-[1920px] flex-col gap-5">
         <ControlBar
           selection={selection}
           onSelectionChange={applySelection}
@@ -97,9 +131,12 @@ function App() {
             setHighlightCharacteristic(true);
           }}
           onRelativeModeSlide={(modeIndex) => applySelection(selectionFromRelativeIndex(selection, modeIndex))}
+          audioEnabled={audioEnabled}
+          onEnableAudio={enableAudio}
+          onPlayMode={handlePlayMode}
         />
 
-        <div className="grid gap-5 xl:grid-cols-[1.4fr_0.9fr]">
+        <div className="grid gap-5 xl:grid-cols-[1.55fr_0.85fr]">
           <ModalVisualizer
             context={context}
             compareContext={compareContext}
@@ -110,6 +147,7 @@ function App() {
             pinnedNote={pinnedNote}
             onPinNote={setPinnedNote}
             onTooltipChange={setTooltip}
+            onPlayNote={handlePlayNote}
           />
 
           <InfoPanel
@@ -117,8 +155,19 @@ function App() {
             pinnedNote={pinnedNote}
             hoveredChord={hoveredChord}
             onChordHover={setHoveredChord}
+            onChordPlay={handlePlayChord}
+            onModePlay={handlePlayMode}
           />
         </div>
+
+        <RelativeLab
+          context={context}
+          selection={selection}
+          compareSelection={compareSelection}
+          onSelectionChange={applySelection}
+          onCompareSelectionChange={applyCompareSelection}
+          onPlaySelection={handlePlaySelection}
+        />
 
         {compare ? (
           <ComparisonPanel
@@ -131,9 +180,8 @@ function App() {
         ) : null}
 
         <footer className="glass-panel rounded-[28px] px-5 py-4 text-sm text-slate-300">
-          <span className="text-slate-100">Constelação Tonal</span> traduz relatividade modal em geometria,
-          gravidade e função. O desenho pode permanecer idêntico enquanto a percepção harmônica muda
-          profundamente.
+          <span className="text-slate-100">Constelacao Tonal</span> traduz relatividade modal em geometria,
+          gravidade, funcao e escuta. O desenho pode permanecer identico enquanto a percepcao harmonica muda profundamente.
         </footer>
       </div>
 

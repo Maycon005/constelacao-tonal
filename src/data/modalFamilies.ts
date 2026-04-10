@@ -3,11 +3,11 @@ import type { FamilyDefinition } from "../types/music";
 export const NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
 export const VIEW_OPTIONS = [
-  { id: "orbit", label: "Orbit View", hint: "Estrutura geométrica da coleção" },
-  { id: "constellation", label: "Constellation View", hint: "Mesma constelação, novo sol" },
-  { id: "gravity", label: "Gravity View", hint: "Repouso, atração e centro tonal" },
-  { id: "function", label: "Function View", hint: "Graus, tensões e função intervalar" },
-  { id: "harmony", label: "Harmony View", hint: "Campo harmônico e progressões" }
+  { id: "orbit", label: "Orbit View", hint: "Estrutura geometrica da colecao" },
+  { id: "constellation", label: "Constellation View", hint: "Mesma constelacao, novo sol" },
+  { id: "gravity", label: "Gravity View", hint: "Repouso, atracao e centro tonal" },
+  { id: "function", label: "Function View", hint: "Graus, tensoes e funcao intervalar" },
+  { id: "harmony", label: "Harmony View", hint: "Campo harmonico e progressoes" }
 ] as const;
 
 export const FUNCTION_COLORS = {
@@ -22,66 +22,66 @@ export const FAMILIES: Record<FamilyDefinition["id"], FamilyDefinition> = {
   major: {
     id: "major",
     name: "Escala Maior / Modos Gregos",
-    signature: "Halo azul elétrico, clareza editorial e arquitetura diatônica",
+    signature: "Halo azul eletrico, clareza editorial e arquitetura diatonica",
     accent: "#6992ff",
     background: "from-blue-500/20 via-cyan-400/10 to-transparent",
     basePattern: [0, 2, 4, 5, 7, 9, 11],
     modes: [
       {
-        name: "Jônio",
+        name: "Jonio",
         shortName: "Ionian",
-        mood: "luminoso, estável, expansivo",
+        mood: "luminoso, estavel, expansivo",
         characteristic: "7",
         chordColor: "maj7",
-        microcopy: "A sensível empurra de volta para casa com máxima estabilidade."
+        microcopy: "A sensivel empurra de volta para casa com maxima estabilidade."
       },
       {
-        name: "Dórico",
+        name: "Dorico",
         shortName: "Dorian",
-        mood: "menor com impulso, móvel, sofisticado",
+        mood: "menor com impulso, movel, sofisticado",
         characteristic: "6",
         chordColor: "m7",
         microcopy: "A sexta natural clareia um modo menor sem dissolver sua gravidade."
       },
       {
-        name: "Frígio",
+        name: "Frigio",
         shortName: "Phrygian",
         mood: "sombrio, comprimido, tenso",
         characteristic: "b2",
         chordColor: "m7",
-        microcopy: "A segunda menor cria fricção imediata com a tônica."
+        microcopy: "A segunda menor cria friccao imediata com a tonica."
       },
       {
-        name: "Lídio",
+        name: "Lidio",
         shortName: "Lydian",
-        mood: "etéreo, suspenso, cintilante",
+        mood: "etereo, suspenso, cintilante",
         characteristic: "#4",
         chordColor: "maj7#11",
-        microcopy: "A quarta aumentada remove o peso subdominante e abre o céu harmônico."
+        microcopy: "A quarta aumentada remove o peso subdominante e abre o ceu harmonico."
       },
       {
-        name: "Mixolídio",
+        name: "Mixolidio",
         shortName: "Mixolydian",
         mood: "dominante, terroso, aberto",
         characteristic: "b7",
         chordColor: "7",
-        microcopy: "A sétima menor enfraquece a sensível e desloca a gravidade."
+        microcopy: "A setima menor enfraquece a sensivel e desloca a gravidade."
       },
       {
-        name: "Eólio",
+        name: "Eolio",
         shortName: "Aeolian",
-        mood: "melancólico, familiar, menor natural",
+        mood: "melancolico, familiar, menor natural",
         characteristic: "b6",
         chordColor: "m7",
-        microcopy: "A sexta menor reforça a sombra modal do centro."
+        microcopy: "A sexta menor reforca a sombra modal do centro."
       },
       {
-        name: "Lócrio",
+        name: "Locrio",
         shortName: "Locrian",
-        mood: "instável, rarefeito, sem chão",
+        mood: "instavel, rarefeito, sem chao",
         characteristic: "b5",
         chordColor: "m7b5",
-        microcopy: "A quinta diminuta retira o apoio estrutural da tônica."
+        microcopy: "A quinta diminuta retira o apoio estrutural da tonica."
       }
     ],
     progressionMap: {
@@ -96,67 +96,67 @@ export const FAMILIES: Record<FamilyDefinition["id"], FamilyDefinition> = {
   },
   harmonicMinor: {
     id: "harmonicMinor",
-    name: "Menor Harmônica",
-    signature: "Magenta dramático, sensível elevada e contraste teatral",
+    name: "Menor Harmonica",
+    signature: "Magenta dramatico, sensivel elevada e contraste teatral",
     accent: "#cb7cff",
     background: "from-fuchsia-500/20 via-violet-500/10 to-transparent",
     basePattern: [0, 2, 3, 5, 7, 8, 11],
     modes: [
       {
-        name: "Menor Harmônica",
+        name: "Menor Harmonica",
         shortName: "Harmonic Minor",
-        mood: "dramático, tonal, intenso",
+        mood: "dramatico, tonal, intenso",
         characteristic: "7",
         chordColor: "m(maj7)",
-        microcopy: "A sensível elevada cria uma gravidade tonal muito clara sobre um chão menor."
+        microcopy: "A sensivel elevada cria uma gravidade tonal muito clara sobre um chao menor."
       },
       {
-        name: "Lócrio #6",
+        name: "Locrio #6",
         shortName: "Locrian #6",
-        mood: "frágil, misterioso, angular",
+        mood: "fragil, misterioso, angular",
         characteristic: "#6",
         chordColor: "m7b5",
-        microcopy: "A sexta elevada aparece dentro de uma estrutura ainda instável."
+        microcopy: "A sexta elevada aparece dentro de uma estrutura ainda instavel."
       },
       {
-        name: "Jônio #5",
+        name: "Jonio #5",
         shortName: "Ionian #5",
         mood: "maior cintilante, expandido",
         characteristic: "#5",
         chordColor: "maj7#5",
-        microcopy: "A quinta aumentada desloca a sensação de estabilidade do modo maior."
+        microcopy: "A quinta aumentada desloca a sensacao de estabilidade do modo maior."
       },
       {
-        name: "Dórico #4",
+        name: "Dorico #4",
         shortName: "Dorian #4",
-        mood: "menor suspenso, elástico",
+        mood: "menor suspenso, elastico",
         characteristic: "#4",
         chordColor: "m7",
-        microcopy: "A quarta aumentada injeta tensão aérea num corpo menor."
+        microcopy: "A quarta aumentada injeta tensao aerea num corpo menor."
       },
       {
-        name: "Frígio Dominante",
+        name: "Frigio Dominante",
         shortName: "Phrygian Dominant",
-        mood: "ardente, dominante, exótico",
+        mood: "ardente, dominante, exotico",
         characteristic: "3 / b2",
         chordColor: "7",
-        microcopy: "Terça maior e segunda menor convivem num eixo de altíssima identidade."
+        microcopy: "Terca maior e segunda menor convivem num eixo de altissima identidade."
       },
       {
-        name: "Lídio #2",
+        name: "Lidio #2",
         shortName: "Lydian #2",
-        mood: "flutuante, cromático, brilhante",
+        mood: "flutuante, cromatico, brilhante",
         characteristic: "#2",
         chordColor: "maj7#11",
         microcopy: "A segunda aumentada empurra o modo para um brilho pouco terrestre."
       },
       {
-        name: "Superlócrio bb7",
+        name: "Superlocrio bb7",
         shortName: "Super Locrian bb7",
-        mood: "máxima instabilidade, fricção extrema",
+        mood: "maxima instabilidade, friccao extrema",
         characteristic: "bb7",
         chordColor: "dim7",
-        microcopy: "Quase tudo tensiona a tônica: a gravidade existe, mas é turbulenta."
+        microcopy: "Quase tudo tensiona a tonica: a gravidade existe, mas e turbulenta."
       }
     ],
     progressionMap: {
@@ -171,67 +171,67 @@ export const FAMILIES: Record<FamilyDefinition["id"], FamilyDefinition> = {
   },
   melodicMinor: {
     id: "melodicMinor",
-    name: "Menor Melódica",
-    signature: "Ciano frio, sofisticação moderna e tensão elegante",
+    name: "Menor Melodica",
+    signature: "Ciano frio, sofisticacao moderna e tensao elegante",
     accent: "#58ddff",
     background: "from-cyan-500/20 via-blue-500/10 to-transparent",
     basePattern: [0, 2, 3, 5, 7, 9, 11],
     modes: [
       {
-        name: "Menor Melódica",
+        name: "Menor Melodica",
         shortName: "Melodic Minor",
-        mood: "menor moderno, refinado, flexível",
+        mood: "menor moderno, refinado, flexivel",
         characteristic: "6 / 7",
         chordColor: "m(maj7)",
-        microcopy: "A sexta e a sétima naturais modernizam o eixo menor."
+        microcopy: "A sexta e a setima naturais modernizam o eixo menor."
       },
       {
-        name: "Dórico b2",
+        name: "Dorico b2",
         shortName: "Dorian b2",
-        mood: "escuro, móvel, sofisticado",
+        mood: "escuro, movel, sofisticado",
         characteristic: "b2",
         chordColor: "m7",
         microcopy: "A segunda menor muda a entrada do modo, mas preserva mobilidade interna."
       },
       {
-        name: "Lídio Aumentado",
+        name: "Lidio Aumentado",
         shortName: "Lydian Augmented",
         mood: "suspenso, luxuoso, cintilante",
         characteristic: "#4 / #5",
         chordColor: "maj7#5",
-        microcopy: "Duas expansões simultâneas mudam radicalmente a cor do maior."
+        microcopy: "Duas expansoes simultaneas mudam radicalmente a cor do maior."
       },
       {
-        name: "Lídio Dominante",
+        name: "Lidio Dominante",
         shortName: "Lydian Dominant",
         mood: "dominante luminoso, aberto",
         characteristic: "#4 / b7",
         chordColor: "7#11",
-        microcopy: "A tensão dominante convive com um horizonte lídio."
+        microcopy: "A tensao dominante convive com um horizonte lidio."
       },
       {
-        name: "Mixolídio b6",
+        name: "Mixolidio b6",
         shortName: "Mixolydian b6",
         mood: "dominante escurecido, denso",
         characteristic: "b6",
         chordColor: "7",
-        microcopy: "A sexta menor muda o perfume dominante sem retirar sua função."
+        microcopy: "A sexta menor muda o perfume dominante sem retirar sua funcao."
       },
       {
-        name: "Lócrio #2",
+        name: "Locrio #2",
         shortName: "Locrian #2",
-        mood: "instável com respiro, nervoso",
+        mood: "instavel com respiro, nervoso",
         characteristic: "#2",
         chordColor: "m7b5",
-        microcopy: "O chão segue quebrado, mas a segunda maior abre uma fresta de clareza."
+        microcopy: "O chao segue quebrado, mas a segunda maior abre uma fresta de clareza."
       },
       {
         name: "Alterado",
         shortName: "Altered",
-        mood: "alta tensão, máxima fricção",
+        mood: "alta tensao, maxima friccao",
         characteristic: "b9 / #9 / b5 / #5",
         chordColor: "7alt",
-        microcopy: "É uma órbita de instabilidade controlada em torno de um dominante."
+        microcopy: "E uma orbita de instabilidade controlada em torno de um dominante."
       }
     ],
     progressionMap: {

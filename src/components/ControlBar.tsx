@@ -1,4 +1,4 @@
-import { Sparkles, Telescope, Waves, RotateCcw, SplitSquareVertical } from "lucide-react";
+import { Volume2, Sparkles, Telescope, Waves, RotateCcw, SplitSquareVertical } from "lucide-react";
 import { FAMILIES, NOTES, VIEW_OPTIONS } from "../data/modalFamilies";
 import type { FamilyId, SelectionState, ViewId } from "../types/music";
 
@@ -17,6 +17,9 @@ interface ControlBarProps {
   onToggleCharacteristic: () => void;
   onReset: () => void;
   onRelativeModeSlide: (modeIndex: number) => void;
+  audioEnabled: boolean;
+  onEnableAudio: () => void;
+  onPlayMode: () => void;
 }
 
 export function ControlBar({
@@ -33,35 +36,38 @@ export function ControlBar({
   highlightCharacteristic,
   onToggleCharacteristic,
   onReset,
-  onRelativeModeSlide
+  onRelativeModeSlide,
+  audioEnabled,
+  onEnableAudio,
+  onPlayMode
 }: ControlBarProps) {
   const familyModes = FAMILIES[selection.family].modes;
 
   return (
-    <header className="glass-panel rounded-[28px] px-4 py-4 md:px-6 md:py-5">
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
+    <header className="glass-panel rounded-[32px] px-5 py-5 md:px-7 md:py-6">
+      <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div className="max-w-4xl">
-            <p className="panel-label mb-2">Constelação Tonal</p>
-            <h1 className="text-2xl font-semibold tracking-tight text-slate-50 md:text-4xl">
-              Mesma coleção, novo sol.
+            <p className="panel-label mb-2">Constelacao Tonal</p>
+            <h1 className="text-3xl font-semibold tracking-tight text-slate-50 md:text-5xl">
+              Mesma colecao, novo sol.
             </h1>
-            <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-300 md:text-base">
-              Veja a geometria permanecer enquanto a tônica redefine repouso, função e cor modal.
+            <p className="mt-3 max-w-3xl text-base leading-relaxed text-slate-300 md:text-xl">
+              Veja a geometria permanecer enquanto a tonica redefine repouso, funcao, tensao e cor modal.
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 text-xs text-slate-300 md:grid-cols-4">
-            <div className="data-chip">Hover nas notas revela grau, intervalo e função.</div>
-            <div className="data-chip">Autoplay desliza a gravidade tonal pela mesma coleção.</div>
-            <div className="data-chip">Comparação mostra o que permanece e o que muda.</div>
-            <div className="data-chip">Produto usa apenas sustenidos para consistência visual.</div>
+          <div className="grid grid-cols-1 gap-2 text-xs text-slate-300 md:grid-cols-2 2xl:grid-cols-4">
+            <div className="data-chip">Hover nas notas revela grau, intervalo e funcao.</div>
+            <div className="data-chip">Autoplay desliza a gravidade tonal pela mesma colecao.</div>
+            <div className="data-chip">Comparacao mostra o que permanece e o que muda.</div>
+            <div className="data-chip">Audio torna a nova tonica audivel junto da nova geometria.</div>
           </div>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-7">
           <label className="flex flex-col gap-1">
-            <span className="panel-label">Família</span>
+            <span className="panel-label">Familia</span>
             <select
               className="soft-input"
               value={selection.family}
@@ -82,7 +88,7 @@ export function ControlBar({
           </label>
 
           <label className="flex flex-col gap-1">
-            <span className="panel-label">Tônica</span>
+            <span className="panel-label">Tonica</span>
             <select
               className="soft-input"
               value={selection.tonic}
@@ -113,9 +119,10 @@ export function ControlBar({
             </select>
           </label>
 
-          <label className="flex flex-col gap-2">
+          <label className="flex flex-col gap-2 xl:col-span-2">
             <span className="panel-label">Percurso Relativo</span>
             <input
+              className="accent-cyan-400"
               type="range"
               min={0}
               max={6}
@@ -132,7 +139,7 @@ export function ControlBar({
 
           <button className="soft-button flex items-center justify-center gap-2" onClick={onToggleAnimations}>
             <Waves size={16} />
-            {animations ? "Animações on" : "Animações off"}
+            {animations ? "Animacoes on" : "Animacoes off"}
           </button>
         </div>
 
@@ -142,6 +149,7 @@ export function ControlBar({
               key={option.id}
               className={`soft-button ${view === option.id ? "border-cyan-400/70 text-white shadow-neon" : ""}`}
               onClick={() => onViewChange(option.id as ViewId)}
+              title={option.hint}
             >
               {option.label}
             </button>
@@ -154,7 +162,7 @@ export function ControlBar({
             onClick={onToggleCompare}
           >
             <SplitSquareVertical size={16} />
-            {compare ? "Comparação ligada" : "Comparar modos"}
+            {compare ? "Comparacao ligada" : "Comparar modos"}
           </button>
           <button
             className={`soft-button flex items-center gap-2 ${
@@ -163,7 +171,11 @@ export function ControlBar({
             onClick={onToggleCharacteristic}
           >
             <Telescope size={16} />
-            {highlightCharacteristic ? "Graus característicos em foco" : "Destacar grau característico"}
+            {highlightCharacteristic ? "Graus caracteristicos em foco" : "Destacar grau caracteristico"}
+          </button>
+          <button className="soft-button flex items-center gap-2" onClick={audioEnabled ? onPlayMode : onEnableAudio}>
+            <Volume2 size={16} />
+            {audioEnabled ? "Ouvir modo atual" : "Ativar audio"}
           </button>
           <button className="soft-button flex items-center gap-2" onClick={onReset}>
             <RotateCcw size={16} />

@@ -13,6 +13,7 @@ interface ModalVisualizerProps {
   pinnedNote: string | null;
   onPinNote: (note: string | null) => void;
   onTooltipChange: (tooltip: TooltipState | null) => void;
+  onPlayNote: (note: string) => void;
 }
 
 interface Position {
@@ -22,8 +23,8 @@ interface Position {
 
 const SVG_SIZE = 1000;
 const CENTER = 500;
-const RING_RADIUS = 340;
-const INNER_RADIUS = 210;
+const RING_RADIUS = 395;
+const INNER_RADIUS = 235;
 
 function positions() {
   const list: Position[] = [];
@@ -68,7 +69,8 @@ export function ModalVisualizer({
   highlightCharacteristic,
   pinnedNote,
   onPinNote,
-  onTooltipChange
+  onTooltipChange,
+  onPlayNote
 }: ModalVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const outerPositions = positions();
@@ -82,10 +84,10 @@ export function ModalVisualizer({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const particles = Array.from({ length: 90 }, () => ({
+    const particles = Array.from({ length: 110 }, () => ({
       x: Math.random(),
       y: Math.random(),
-      z: 0.25 + Math.random() * 0.95,
+      z: 0.2 + Math.random() * 1.2,
       phase: Math.random() * Math.PI * 2
     }));
 
@@ -103,25 +105,25 @@ export function ModalVisualizer({
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       for (const particle of particles) {
-        particle.phase += (animations ? 0.04 : 0.008) * particle.z;
-        particle.y += 0.00045 * particle.z;
+        particle.phase += (animations ? 0.04 : 0.01) * particle.z;
+        particle.y += 0.00042 * particle.z;
         if (particle.y > 1.04) particle.y = -0.04;
 
         const x = particle.x * canvas.width;
         const y = particle.y * canvas.height;
-        const radius = (1.1 + Math.sin(particle.phase + frame) * 0.7) * particle.z * window.devicePixelRatio;
-        const alpha = 0.15 + ((Math.sin(particle.phase + frame) + 1) / 2) * 0.24;
+        const radius = (1.2 + Math.sin(particle.phase + frame) * 0.8) * particle.z * window.devicePixelRatio;
+        const alpha = 0.12 + ((Math.sin(particle.phase + frame) + 1) / 2) * 0.24;
 
         ctx.beginPath();
-        ctx.arc(x, y, Math.max(0.6, radius), 0, Math.PI * 2);
+        ctx.arc(x, y, Math.max(0.4, radius), 0, Math.PI * 2);
         ctx.fillStyle = `rgba(215,231,255,${alpha.toFixed(3)})`;
         ctx.fill();
 
-        const glow = ctx.createRadialGradient(x, y, 0, x, y, radius * 4);
+        const glow = ctx.createRadialGradient(x, y, 0, x, y, radius * 5);
         glow.addColorStop(0, `${context.family.accent}55`);
         glow.addColorStop(1, "rgba(0,0,0,0)");
         ctx.beginPath();
-        ctx.arc(x, y, Math.max(2, radius * 4), 0, Math.PI * 2);
+        ctx.arc(x, y, Math.max(2, radius * 5), 0, Math.PI * 2);
         ctx.fillStyle = glow;
         ctx.fill();
       }
@@ -140,7 +142,6 @@ export function ModalVisualizer({
   }, [animations, context.family.accent]);
 
   const renderConstellationLinks = () => {
-    if (view !== "constellation") return null;
     const activeNodes = context.collectionPcs.map((pc) => outerPositions[pc]);
     const links: JSX.Element[] = [];
 
@@ -148,7 +149,7 @@ export function ModalVisualizer({
       activeNodes.slice(fromIndex + 1).forEach((to, toIndex) => {
         const key = `${fromIndex}-${toIndex}`;
         const distance = Math.hypot(from.x - to.x, from.y - to.y);
-        const alpha = Math.max(0.12, 0.3 - distance / 2200);
+        const alpha = view === "constellation" ? Math.max(0.15, 0.34 - distance / 2300) : 0.08;
         links.push(
           <line
             key={key}
@@ -157,7 +158,7 @@ export function ModalVisualizer({
             x2={to.x}
             y2={to.y}
             stroke={`rgba(116,221,255,${alpha.toFixed(3)})`}
-            strokeWidth={1}
+            strokeWidth={view === "constellation" ? 1.25 : 0.7}
           />
         );
       });
@@ -167,30 +168,26 @@ export function ModalVisualizer({
   };
 
   const renderGravity = () => {
-    if (view !== "gravity") return null;
     const tonicNode = outerPositions[context.tonicPc];
+    if (view !== "gravity") return null;
 
     return (
       <>
-        <circle
-          cx={tonicNode.x}
-          cy={tonicNode.y}
-          r={animations ? 168 : 154}
-          fill="rgba(122, 247, 207, 0.08)"
-        />
+        <circle cx={tonicNode.x} cy={tonicNode.y} r={240} fill="rgba(122,247,207,0.05)" />
+        <circle cx={tonicNode.x} cy={tonicNode.y} r={176} fill="rgba(122,247,207,0.07)" />
         {context.collectionPcs
           .filter((pc) => pc !== context.tonicPc)
           .map((pc) => {
             const point = outerPositions[pc];
-            const controlX = (point.x + tonicNode.x) / 2 + (point.y - tonicNode.y) * 0.08;
-            const controlY = (point.y + tonicNode.y) / 2 - (point.x - tonicNode.x) * 0.08;
+            const controlX = (point.x + tonicNode.x) / 2 + (point.y - tonicNode.y) * 0.12;
+            const controlY = (point.y + tonicNode.y) / 2 - (point.x - tonicNode.x) * 0.12;
             return (
               <path
                 key={`grav-${pc}`}
                 d={`M ${point.x} ${point.y} Q ${controlX} ${controlY} ${tonicNode.x} ${tonicNode.y}`}
                 fill="none"
-                stroke="rgba(142, 249, 198, 0.16)"
-                strokeWidth={1.2}
+                stroke="rgba(142,249,198,0.18)"
+                strokeWidth={1.35}
               />
             );
           })}
@@ -214,20 +211,20 @@ export function ModalVisualizer({
                 y1={CENTER}
                 x2={point.x}
                 y2={point.y}
-                stroke="rgba(105,146,255,0.12)"
+                stroke="rgba(105,146,255,0.14)"
                 strokeWidth={1}
               />
               <circle
                 cx={point.x}
                 cy={point.y}
-                r={isCenter ? 26 : 20}
-                fill={isCenter ? "rgba(141,247,198,0.16)" : "rgba(105,146,255,0.10)"}
-                stroke={isCenter ? "rgba(141,247,198,0.65)" : "rgba(105,146,255,0.38)"}
+                r={isCenter ? 30 : 22}
+                fill={isCenter ? "rgba(141,247,198,0.2)" : "rgba(105,146,255,0.12)"}
+                stroke={isCenter ? "rgba(141,247,198,0.72)" : "rgba(105,146,255,0.42)"}
               />
-              <text x={point.x} y={point.y - 2} textAnchor="middle" fontSize={9} fill="#f8fbff">
+              <text x={point.x} y={point.y - 2} textAnchor="middle" fontSize={10} fill="#f8fbff">
                 {chord.numeral}
               </text>
-              <text x={point.x} y={point.y + 11} textAnchor="middle" fontSize={8} fill="#98a7d8">
+              <text x={point.x} y={point.y + 12} textAnchor="middle" fontSize={8} fill="#98a7d8">
                 {chord.root}
               </text>
             </g>
@@ -239,13 +236,12 @@ export function ModalVisualizer({
 
   return (
     <section className="glass-panel relative overflow-hidden rounded-[32px] p-4">
-      <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 h-full w-full opacity-80" />
-
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(88,221,255,0.08),transparent_55%)]" />
+      <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 h-full w-full opacity-85" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(88,221,255,0.09),transparent_58%)]" />
 
       <motion.svg
-        viewBox={`0 0 ${SVG_SIZE} ${SVG_SIZE}`}
-        className="relative z-10 h-[560px] w-full lg:h-[700px]"
+        viewBox={`40 40 920 920`}
+        className="relative z-10 h-[680px] w-full lg:h-[820px] xl:h-[900px]"
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.45 }}
@@ -256,7 +252,7 @@ export function ModalVisualizer({
             <stop offset="100%" stopColor="#58ddff" />
           </linearGradient>
           <filter id="soft-glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feGaussianBlur stdDeviation="5" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
@@ -264,18 +260,19 @@ export function ModalVisualizer({
           </filter>
         </defs>
 
-        <circle cx={CENTER} cy={CENTER} r={430} fill="rgba(82,121,255,0.05)" />
+        <circle cx={CENTER} cy={CENTER} r={455} fill="rgba(82,121,255,0.04)" />
+        <circle cx={CENTER} cy={CENTER} r={RING_RADIUS + 30} fill="rgba(105,146,255,0.035)" />
         <circle cx={CENTER} cy={CENTER} r={RING_RADIUS} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth={2} />
-        <circle cx={CENTER} cy={CENTER} r={RING_RADIUS - 40} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={1} />
+        <circle cx={CENTER} cy={CENTER} r={RING_RADIUS - 46} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={1} />
 
-        {renderConstellationLinks()}
+        {view !== "harmony" ? renderConstellationLinks() : null}
         {renderGravity()}
 
         <path
           d={polygonPath(outerPositions, context.collectionPcs)}
-          fill="rgba(105,146,255,0.09)"
+          fill="rgba(105,146,255,0.10)"
           stroke="url(#polygon-gradient)"
-          strokeWidth={3.2}
+          strokeWidth={4}
           filter="url(#soft-glow)"
         />
 
@@ -283,16 +280,15 @@ export function ModalVisualizer({
           <path
             d={polygonPath(outerPositions, compareContext.collectionPcs)}
             fill="rgba(203,124,255,0.05)"
-            stroke={collectionShared ? "rgba(203,124,255,0.72)" : "rgba(255,139,199,0.7)"}
+            stroke={collectionShared ? "rgba(203,124,255,0.78)" : "rgba(255,139,199,0.74)"}
             strokeDasharray="8 6"
-            strokeWidth={2.2}
+            strokeWidth={2.4}
           />
         ) : null}
 
         {renderHarmonyView()}
 
         {outerPositions.map((position, pc) => {
-          const note = context.collectionNotes.find((value) => value === context.collectionNotes[context.collectionPcs.indexOf(pc)]) ?? "";
           const noteName = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"][pc];
           const degree = context.degrees.find((item) => item.note === noteName);
           const inCollection = context.collectionPcs.includes(pc);
@@ -303,16 +299,16 @@ export function ModalVisualizer({
             highlightCharacteristic &&
             Boolean(degree && context.characteristicDegrees.some((target) => degree.degreeLabel === target));
 
-          const radius = isTonic ? 18 : isPinned ? 15 : isCharacteristic ? 13 : inCollection ? 11 : 7;
+          const radius = isTonic ? 20 : isPinned ? 16 : isCharacteristic ? 14 : inCollection ? 11.5 : 7.5;
           const nodeStroke =
             view === "function" && degree ? functionColor(degree.functionKind) : isCharacteristic ? "#ffd071" : "#8ab6ff";
           const nodeFill =
             view === "function" && degree
               ? `${functionColor(degree.functionKind)}66`
               : isTonic
-                ? "rgba(141,247,198,0.22)"
+                ? "rgba(141,247,198,0.24)"
                 : inCollection
-                  ? "rgba(105,146,255,0.16)"
+                  ? "rgba(105,146,255,0.20)"
                   : "rgba(124,132,162,0.12)";
 
           return (
@@ -328,25 +324,26 @@ export function ModalVisualizer({
                   x: event.clientX,
                   y: event.clientY,
                   title: noteName,
-                  lines: [`Grau ${degree.degreeLabel}`, degree.intervalName, `Função: ${degree.functionKind}`]
+                  lines: [`Grau ${degree.degreeLabel}`, degree.intervalName, `Funcao: ${degree.functionKind}`]
                 });
               }}
               onMouseLeave={() => onTooltipChange(null)}
-              onClick={() => onPinNote(isPinned ? null : noteName)}
+              onClick={() => {
+                onPinNote(isPinned ? null : noteName);
+                onPlayNote(noteName);
+              }}
             >
               {isTonic ? (
-                <circle
-                  cx={position.x}
-                  cy={position.y}
-                  r={radius + (animations ? 18 : 14)}
-                  fill="rgba(141,247,198,0.08)"
-                />
+                <>
+                  <circle cx={position.x} cy={position.y} r={radius + 28} fill="rgba(141,247,198,0.08)" />
+                  <circle cx={position.x} cy={position.y} r={radius + 84} fill="rgba(141,247,198,0.04)" />
+                </>
               ) : null}
               {compare && isCompareTonic ? (
                 <circle
                   cx={position.x}
                   cy={position.y}
-                  r={radius + 12}
+                  r={radius + 16}
                   fill="rgba(203,124,255,0.08)"
                   stroke="rgba(203,124,255,0.66)"
                   strokeWidth={1.4}
@@ -358,13 +355,13 @@ export function ModalVisualizer({
                 r={radius}
                 fill={nodeFill}
                 stroke={nodeStroke}
-                strokeWidth={isTonic ? 2.4 : 1.6}
+                strokeWidth={isTonic ? 2.7 : 1.8}
               />
               <text
                 x={position.x}
                 y={position.y + 4}
                 textAnchor="middle"
-                fontSize={12}
+                fontSize={13}
                 fontWeight={700}
                 fill={inCollection ? "#f8fbff" : "#7080a8"}
               >
@@ -378,18 +375,18 @@ export function ModalVisualizer({
           <text
             key={`pc-${index}`}
             x={position.x}
-            y={position.y - 24}
+            y={position.y - 26}
             textAnchor="middle"
-            fontSize={9}
-            fill="rgba(176,188,221,0.52)"
+            fontSize={10}
+            fill="rgba(176,188,221,0.56)"
           >
             {index}
           </text>
         ))}
 
         <g transform={`translate(${CENTER}, ${CENTER})`}>
-          <circle r={86} fill="rgba(10,16,32,0.84)" stroke="rgba(255,255,255,0.12)" />
-          <text y={-16} textAnchor="middle" fontSize={15} fill="#f8fbff" letterSpacing={1.1}>
+          <circle r={94} fill="rgba(10,16,32,0.86)" stroke="rgba(255,255,255,0.12)" />
+          <text y={-16} textAnchor="middle" fontSize={16} fill="#f8fbff" letterSpacing={1.1}>
             {context.tonic} {context.mode.name}
           </text>
           <text y={8} textAnchor="middle" fontSize={11} fill="#98a7d8">
@@ -403,11 +400,11 @@ export function ModalVisualizer({
 
       <div className="relative z-10 mt-3 grid gap-3 lg:grid-cols-3">
         <div className="data-chip">
-          <div className="panel-label mb-1">Coleção</div>
+          <div className="panel-label mb-1">Colecao</div>
           <div>{context.collectionNotes.join(" - ")}</div>
         </div>
         <div className="data-chip">
-          <div className="panel-label mb-1">Diagnóstico modal</div>
+          <div className="panel-label mb-1">Diagnostico modal</div>
           <div>
             {compare && collectionShared
               ? "A geometria permaneceu; a hierarquia mudou."
@@ -415,15 +412,15 @@ export function ModalVisualizer({
           </div>
         </div>
         <div className="data-chip">
-          <div className="panel-label mb-1">Microexplicação</div>
+          <div className="panel-label mb-1">Microexplicacao</div>
           <div>
             {view === "gravity"
               ? "A aura e os fluxos mostram para onde o sistema quer resolver."
               : view === "function"
-                ? "As mesmas notas recebem novos papéis quando o centro tonal muda."
+                ? "As mesmas notas recebem novos papeis quando o centro tonal muda."
                 : view === "harmony"
-                  ? "O campo harmônico traduz a coleção em centros de função."
-                  : "A constelação fixa ajuda a ver a relatividade modal com os olhos."}
+                  ? "O campo harmonico traduz a colecao em centros de funcao."
+                  : "A constelacao fixa ajuda a ver a relatividade modal com os olhos."}
           </div>
         </div>
       </div>

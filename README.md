@@ -1,15 +1,16 @@
 # Constelacao Tonal
 
-Microproduto interativo para ensinar modos gregos, menor harmonica e menor melodica com uma metafora visual de observatorio cosmico: a mesma colecao de notas pode manter a mesma geometria enquanto a tonica redefine repouso, tensao, funcao e cor modal.
+Aplicacao interativa premium para estudar modos gregos, menor harmonica e menor melodica com uma metafora visual de observatorio cosmico: a mesma colecao de notas pode manter a mesma geometria enquanto a tonica redefine repouso, tensao, funcao e cor modal.
 
 ## O que a app mostra
 
 - explorador modal com familia, tonica e modo
 - views `Orbit`, `Constellation`, `Gravity`, `Function` e `Harmony`
 - comparacao entre dois modos
-- autoplay que percorre modos relativos preservando a colecao
+- laboratorio de relativos com slider para os 7 modos da mesma colecao
+- autoplay modal
 - campo harmonico em triades e tetrades
-- microtextos didaticos sobre relatividade modal
+- audio Web Audio para ouvir notas, modos e acordes
 
 ## Stack
 
@@ -19,15 +20,16 @@ Microproduto interativo para ensinar modos gregos, menor harmonica e menor melod
 - Tailwind CSS
 - Framer Motion
 - SVG + Canvas 2D
+- Web Audio API
 
 ## Rodando localmente
 
 ```bash
 npm install
-npm run dev
+npm run dev -- --host
 ```
 
-Abra o endereco mostrado pelo Vite no navegador.
+Abra o endereco mostrado pelo Vite no navegador. Se `localhost` nao abrir no seu ambiente, use `127.0.0.1`.
 
 ## Build de producao
 
@@ -41,42 +43,36 @@ O resultado fica em `dist/`.
 
 ### Vercel
 
-1. Importe o repositorio.
+1. Conecte o repositorio.
 2. Framework preset: `Vite`.
 3. Build command: `npm run build`.
 4. Output directory: `dist`.
+5. Cada `git push` para `main` gera um novo deploy.
 
-### Netlify
+### GitHub Pages automatizado
 
-1. Conecte o repositorio.
-2. Build command: `npm run build`.
-3. Publish directory: `dist`.
+O projeto inclui workflow em `.github/workflows/deploy-pages.yml`.
 
-### GitHub Pages
+Para ativar:
 
-1. Rode `npm run build`.
-2. Publique o conteudo de `dist/` em uma branch de pages.
-3. O projeto usa `base: "./"` em `vite.config.ts`, o que facilita deploy estatico.
+1. No GitHub, abra `Settings` do repositorio.
+2. Clique em `Pages`.
+3. Em `Build and deployment`, escolha `GitHub Actions`.
+4. Depois do proximo `git push`, o Pages publica automaticamente.
+
+## Fluxo de atualizacao
+
+```bash
+git add .
+git commit -m "Sua mudanca"
+git push
+```
+
+No Vercel, isso atualiza automaticamente. No GitHub Pages, a action tambem rebuilda e republica.
 
 ## Arquitetura curta
 
 Veja `docs/architecture.md`.
-
-## Principais decisoes de produto
-
-- mesma colecao, novo centro tonal: a geometria no anel cromatico permanece fixa
-- a tonica atual recebe halo, peso visual e fluxo gravitacional
-- as funcoes intervalares mudam em tempo real conforme o centro tonal
-- a comparacao destaca explicitamente o que permanece e o que muda
-- a UI usa apenas sustenidos por decisao de produto
-
-## Scripts
-
-```bash
-npm run dev
-npm run build
-npm run preview
-```
 
 ## Validacao realizada
 

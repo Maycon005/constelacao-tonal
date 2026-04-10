@@ -36,13 +36,13 @@ function degreeLabel(semitone: number, degreeIndex: number) {
 
 function intervalName(semitone: number) {
   const table: Record<number, string> = {
-    0: "uníssono",
+    0: "unissono",
     1: "2m",
     2: "2M",
     3: "3m",
     4: "3M",
     5: "4J",
-    6: "trítono",
+    6: "tritono",
     7: "5J",
     8: "6m",
     9: "6M",
@@ -97,7 +97,7 @@ function functionOfDegree(index: number, label: string): FunctionKind {
 function chordFunction(index: number) {
   if (index === 0) return "centro";
   if (index === 4) return "dominante";
-  if (index === 1 || index === 3) return "pré-dominante";
+  if (index === 1 || index === 3) return "pre-dominante";
   return "cor modal";
 }
 
@@ -217,4 +217,28 @@ export function functionColor(kind: FunctionKind) {
 
 export function familyList(): { id: FamilyId; label: string }[] {
   return (Object.keys(FAMILIES) as FamilyId[]).map((id) => ({ id, label: FAMILIES[id].name }));
+}
+
+export function collectionModeSelections(selection: SelectionState): SelectionState[] {
+  const collection = collectionForSelection(selection).collectionNotes;
+  return collection.map((tonic, modeIndex) => ({
+    family: selection.family,
+    tonic,
+    modeIndex
+  }));
+}
+
+export function relativeMinorSelection(selection: SelectionState): SelectionState {
+  const family = FAMILIES[selection.family];
+  const collection = collectionForSelection(selection).collectionNotes;
+  const targetModeIndex = family.id === "major" ? 5 : 0;
+  return {
+    family: selection.family,
+    tonic: collection[targetModeIndex],
+    modeIndex: targetModeIndex
+  };
+}
+
+export function midiFromNote(note: string, octave = 4) {
+  return 12 * (octave + 1) + noteToPc(note);
 }
