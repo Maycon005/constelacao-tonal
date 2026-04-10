@@ -6,7 +6,13 @@ import { ModalVisualizer } from "./components/ModalVisualizer";
 import { RelativeLab } from "./components/RelativeLab";
 import { Tooltip } from "./components/Tooltip";
 import { playChord, playModeSweep, playNote, playProgression } from "./lib/audio";
-import { buildModalContext, nextRelativeSelection, progressionPlayback, selectionFromRelativeIndex } from "./lib/music";
+import {
+  buildModalContext,
+  nextRelativeSelection,
+  progressionPlayback,
+  relativeMinorSelection,
+  selectionFromRelativeIndex
+} from "./lib/music";
 import type { HarmonicChord, SelectionState, TooltipState, ViewId } from "./types/music";
 
 const DEFAULT_SELECTION: SelectionState = {
@@ -66,6 +72,22 @@ function App() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
+
+  useEffect(() => {
+    if (selection.family !== "major" || selection.modeIndex !== 0) return;
+
+    const featuredPair = relativeMinorSelection(selection);
+    setCompareSelection((current) => {
+      if (
+        current.family === featuredPair.family &&
+        current.tonic === featuredPair.tonic &&
+        current.modeIndex === featuredPair.modeIndex
+      ) {
+        return current;
+      }
+      return featuredPair;
+    });
+  }, [selection.family, selection.modeIndex, selection.tonic]);
 
   const applySelection = (next: SelectionState) => {
     startTransition(() => {
