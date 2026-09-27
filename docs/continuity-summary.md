@@ -67,3 +67,6 @@ Itens mais provaveis para a proxima iteracao:
 - interface com visual cosmico/editorial, glow controlado e fundo escuro
 - nomes de funcoes e variaveis claros e sem abreviacoes desnecessarias
 - build estatico, sem backend obrigatorio
+
+## Atualizacao 2.0
+StudyStudio.tsx adiciona estudo opcional com cinco etapas e progresso local. Comparador continua independente. Audio ascendente corrigido; progressoes geradas a partir das tetrades tocadas. Testes: npm test (252 contextos). Creditos: By Maycon. Detalhes em release-2.0.md.

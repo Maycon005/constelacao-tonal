@@ -59,7 +59,7 @@ export function ControlBar({
             <div className="data-chip">Hover nas notas revela grau, intervalo e funcao.</div>
             <div className="data-chip">Autoplay desliza a gravidade tonal pela mesma colecao.</div>
             <div className="data-chip">Comparacao mostra o que permanece e o que muda.</div>
-            <div className="data-chip">Audio torna a nova tonica audivel junto da nova geometria.</div>
+            <div className="data-chip">Ouça a nova tônica sem mudar a coleção de notas.</div>
           </div>
         </div>
 
@@ -132,6 +132,7 @@ export function ControlBar({
           {VIEW_OPTIONS.map((option) => (
             <button
               key={option.id}
+              aria-pressed={view === option.id}
               className={`soft-button ${view === option.id ? "border-cyan-400/70 text-white shadow-neon" : ""}`}
               onClick={() => onViewChange(option.id as ViewId)}
               title={option.hint}
@@ -164,7 +165,7 @@ export function ControlBar({
           </button>
           <button className="soft-button flex items-center gap-2" onClick={onReset}>
             <RotateCcw size={16} />
-            Reset elegante
+            Reiniciar exploração
           </button>
         </div>
       </div>

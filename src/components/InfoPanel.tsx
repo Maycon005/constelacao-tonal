@@ -36,6 +36,7 @@ export function InfoPanel({
       >
         <section>
           <p className="panel-label mb-1">Modo Atual</p>
+          {context.family.id === "melodicMinor" ? <p className="mb-3 text-xs text-cyan-200">Menor melódica ascendente: mesma coleção na subida e descida, como no uso jazzístico.</p> : null}
           <div className="flex items-start justify-between gap-3">
             <div>
               <h2 className="text-2xl font-semibold text-white">
@@ -120,6 +121,8 @@ export function InfoPanel({
                 className="soft-button flex items-center gap-2 text-left text-xs"
                 onMouseEnter={() => onChordHover(chord)}
                 onMouseLeave={() => onChordHover(null)}
+                onFocus={() => onChordHover(chord)}
+                onBlur={() => onChordHover(null)}
                 onClick={() => onChordPlay(chord)}
               >
                 <Play size={12} />
@@ -136,6 +139,8 @@ export function InfoPanel({
                 className="soft-button flex items-center gap-2 text-left text-xs"
                 onMouseEnter={() => onChordHover(chord)}
                 onMouseLeave={() => onChordHover(null)}
+                onFocus={() => onChordHover(chord)}
+                onBlur={() => onChordHover(null)}
                 onClick={() => onChordPlay(chord)}
               >
                 <Play size={12} />
@@ -166,7 +171,7 @@ export function InfoPanel({
                 className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-2 text-left transition hover:border-cyan-400/35 hover:bg-cyan-400/5"
                 onClick={() => onProgressionPlay(progression)}
               >
-                <span>{progression}</span>
+                <span>{progression}<small className="mt-1 block text-slate-400">{progressionPlayback(context, progression).chords.map(chord => chord.symbol).join(" → ")}</small></span>
                 <span className="inline-flex items-center gap-1 text-xs text-cyan-200">
                   <Play size={12} />
                   Play
@@ -176,7 +181,7 @@ export function InfoPanel({
           </div>
           {progressionPreview ? (
             <div className="mt-3 text-xs text-slate-400">
-              A reproducao usa as tetrades equivalentes do modo atual para tornar a progressao audivel.
+              Os acordes escritos e tocados são os mesmos. Os números romanos indicam posições dentro deste modo, não funções tonais obrigatórias.
             </div>
           ) : null}
         </section>

@@ -36,6 +36,7 @@ export function ComparisonPanel({
           <select
             className="soft-input"
             value={compareSelection.family}
+            aria-label="Família do comparador livre"
             onChange={(event) =>
               onCompareSelectionChange({
                 family: event.target.value as SelectionState["family"],
@@ -54,6 +55,7 @@ export function ComparisonPanel({
           <select
             className="soft-input"
             value={compareSelection.tonic}
+            aria-label="Tônica do comparador livre"
             onChange={(event) =>
               onCompareSelectionChange({
                 ...compareSelection,
@@ -71,6 +73,7 @@ export function ComparisonPanel({
           <select
             className="soft-input"
             value={compareSelection.modeIndex}
+            aria-label="Modo do comparador livre"
             onChange={(event) =>
               onCompareSelectionChange({
                 ...compareSelection,
@@ -91,6 +94,7 @@ export function ComparisonPanel({
           <input
             className="w-full accent-fuchsia-400"
             type="range"
+            aria-label="Percurso relativo do comparador livre"
             min={0}
             max={6}
             step={1}

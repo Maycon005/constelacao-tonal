@@ -114,7 +114,7 @@ export const FAMILIES: Record<FamilyDefinition["id"], FamilyDefinition> = {
         name: "Locrio #6",
         shortName: "Locrian #6",
         mood: "fragil, misterioso, angular",
-        characteristic: "#6",
+        characteristic: "6",
         chordColor: "m7b5",
         microcopy: "A sexta elevada aparece dentro de uma estrutura ainda instavel."
       },
@@ -221,7 +221,7 @@ export const FAMILIES: Record<FamilyDefinition["id"], FamilyDefinition> = {
         name: "Locrio #2",
         shortName: "Locrian #2",
         mood: "instavel com respiro, nervoso",
-        characteristic: "#2",
+        characteristic: "2",
         chordColor: "m7b5",
         microcopy: "O chao segue quebrado, mas a segunda maior abre uma fresta de clareza."
       },

@@ -2,6 +2,12 @@ import type { HarmonicChord, ModalContext, ProgressionPlayback } from "../types/
 import { midiFromNote } from "./music";
 
 let audioContext: AudioContext | null = null;
+const activeVoices = new Set<OscillatorNode>();
+
+export function stopAudio() {
+  activeVoices.forEach((voice) => { try { voice.stop(); } catch { /* Already ended. */ } });
+  activeVoices.clear();
+}
 
 function getAudioContext() {
   if (!audioContext) {
@@ -44,6 +50,14 @@ function createVoice(ctx: AudioContext, frequency: number, when: number, duratio
 
   oscA.start(when);
   oscB.start(when);
+  for (const oscillator of [oscA, oscB]) {
+    activeVoices.add(oscillator);
+    oscillator.onended = () => {
+      activeVoices.delete(oscillator);
+      oscillator.disconnect();
+      if (!activeVoices.has(oscA) && !activeVoices.has(oscB)) { filter.disconnect(); gain.disconnect(); }
+    };
+  }
   oscA.stop(when + duration + 0.05);
   oscB.stop(when + duration + 0.05);
 }
@@ -74,17 +88,19 @@ export async function playChord(chord: HarmonicChord, duration = 1.55) {
 
 export async function playModeSweep(context: ModalContext) {
   const ctx = await ensureAudioReady();
+  stopAudio();
   const now = ctx.currentTime + 0.02;
 
   createVoice(ctx, midiToFrequency(midiFromNote(context.tonic, 3)), now, 2, 0.04);
 
-  context.modeNotes.forEach((note, index) => {
-    createVoice(ctx, midiToFrequency(midiFromNote(note, 4 + (index > 4 ? 1 : 0))), now + index * 0.2, 0.44, 0.026);
+  [...context.modeSemitones, 12].forEach((step, index) => {
+    createVoice(ctx, midiToFrequency(midiFromNote(context.tonic, 3) + step), now + index * 0.28, 0.65, 0.035);
   });
 }
 
 export async function playProgression(progress: ProgressionPlayback) {
   const ctx = await ensureAudioReady();
+  stopAudio();
   const start = ctx.currentTime + 0.02;
 
   progress.chords.forEach((chord, index) => {

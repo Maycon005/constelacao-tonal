@@ -86,3 +86,9 @@ Veja `docs/continuity-summary.md`.
 
 - `npm install`
 - `npm run build`
+
+## Versao 2.0
+
+Use Aprender do zero para cinco experimentos graduais e Explorar a roda para estudo livre. Creditos: By Maycon, para Artistas do Futuro.
+
+Validar: npm test e npm run build. Veja docs/release-2.0.md para arquitetura, contratos de interacao e limites pedagogicos.

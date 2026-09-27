@@ -35,7 +35,14 @@ function degreeLabel(semitone: number, degreeIndex: number) {
   return `${accidental}${DEGREE_NAMES[degreeIndex]}`;
 }
 
-function intervalName(semitone: number) {
+function intervalName(semitone: number, degreeIndex: number) {
+  const delta = semitone - MAJOR_REFERENCE[degreeIndex];
+  const perfect = [0, 3, 4].includes(degreeIndex);
+  if (degreeIndex === 0) return "unissono";
+  if (delta === 0) return `${degreeIndex + 1}${perfect ? "J" : "M"}`;
+  if (delta === -1) return `${degreeIndex + 1}${perfect ? "dim" : "m"}`;
+  if (delta === 1) return `${degreeIndex + 1}aum`;
+  if (delta === -2) return `${degreeIndex + 1}dim`;
   const table: Record<number, string> = {
     0: "unissono",
     1: "2m",
@@ -97,8 +104,8 @@ function functionOfDegree(index: number, label: string): FunctionKind {
 
 function chordFunction(index: number) {
   if (index === 0) return "centro";
-  if (index === 4) return "dominante";
-  if (index === 1 || index === 3) return "pre-dominante";
+  if (index === 4) return "quinto grau; funcao depende do contexto";
+  if (index === 1 || index === 3) return "contraste com o centro; funcao contextual";
   return "cor modal";
 }
 
@@ -183,7 +190,14 @@ export function buildModalContext(selection: SelectionState): ModalContext {
     characteristicDegrees: characteristic,
     triads: buildHarmonicField(modeNotes, relativeSteps, 3),
     tetrads: buildHarmonicField(modeNotes, relativeSteps, 4),
-    progressions: family.progressionMap[selection.modeIndex] ?? [],
+    // Derive labels from the same chords used for playback, avoiding contradictory voicings.
+    progressions: (family.progressionMap[selection.modeIndex] ?? []).map((line) =>
+      line.split(" - ").map((token) => {
+        const index = romanIndex(token);
+        const chord = buildHarmonicField(modeNotes, relativeSteps, 4)[index];
+        return chord ? `${chord.numeral}${chord.quality}` : token;
+      }).join(" - ")
+    ),
     relativeMajor: pcToNote(motherRootPc),
     relativeMinor: pcToNote(collectionPcs[5])
   };

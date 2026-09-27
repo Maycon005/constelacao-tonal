@@ -48,6 +48,7 @@ export function RelativeLab({
               max={6}
               step={1}
               value={selection.modeIndex}
+              aria-label="Percurso relativo principal no laboratório"
               onChange={(event) => onSelectionChange(relatives[Number(event.target.value)])}
             />
             <div className="mt-3 flex items-center justify-between text-xs text-slate-400">
@@ -72,6 +73,7 @@ export function RelativeLab({
               max={6}
               step={1}
               value={pairedSelection.modeIndex}
+              aria-label="Par pedagógico da mesma coleção"
               onChange={(event) => onPairedSelectionChange(relatives[Number(event.target.value)])}
             />
             <div className="mt-3 flex items-center justify-between text-xs text-slate-400">

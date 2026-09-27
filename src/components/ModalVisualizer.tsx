@@ -267,11 +267,11 @@ export function ModalVisualizer({
                 fill={isCenter ? "rgba(141,247,198,0.2)" : "rgba(105,146,255,0.12)"}
                 stroke={isCenter ? "rgba(141,247,198,0.72)" : "rgba(105,146,255,0.42)"}
               />
-              <text x={point.x} y={point.y - 5} textAnchor="middle" fontSize={12} fill="#f8fbff">
+                <text x={point.x} y={point.y - 5} textAnchor="middle" fontSize={22} fill="#f8fbff">
                 {chord.numeral}
               </text>
-              <text x={point.x} y={point.y + 14} textAnchor="middle" fontSize={11} fill="#98a7d8">
-                {chord.root}
+                <text x={point.x} y={point.y + 22} textAnchor="middle" fontSize={20} fill="#cbd5e1">
+                  {chord.symbol}
               </text>
             </g>
           );
@@ -333,7 +333,8 @@ export function ModalVisualizer({
 
       <motion.svg
         viewBox={`40 40 920 920`}
-        className="relative z-10 h-[680px] w-full lg:h-[820px] xl:h-[900px]"
+        className="relative z-10 aspect-square w-full"
+        aria-label={`Roda cromatica: ${context.tonic} ${context.mode.name}`}
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.45 }}
@@ -407,6 +408,15 @@ export function ModalVisualizer({
           return (
             <g
               key={noteName}
+              role="button"
+              tabIndex={0}
+              aria-label={`${noteName}${degree ? `, grau ${degree.degreeLabel}, ${degree.intervalName}` : ", fora da escala"}. Ouvir nota`}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault(); event.stopPropagation();
+                  onPinNote(isPinned ? null : noteName); onPlayNote(noteName);
+                }
+              }}
               style={{ cursor: "pointer" }}
               onMouseMove={(event) => {
                 if (!degree) {
@@ -454,7 +464,7 @@ export function ModalVisualizer({
                 x={position.x}
                 y={position.y + 4}
                 textAnchor="middle"
-                fontSize={view === "harmony" ? 18 : 13}
+                fontSize={view === "harmony" ? 26 : 23}
                 fontWeight={700}
                 fill={inCollection ? "#f8fbff" : "#7080a8"}
               >
