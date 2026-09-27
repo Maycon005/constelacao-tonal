@@ -1,11 +1,21 @@
-import type { HarmonicChord, ModalContext, ProgressionPlayback } from "../types/music";
+import type {
+  HarmonicChord,
+  ModalContext,
+  ProgressionPlayback,
+} from "../types/music";
 import { midiFromNote } from "./music";
 
 let audioContext: AudioContext | null = null;
 const activeVoices = new Set<OscillatorNode>();
 
 export function stopAudio() {
-  activeVoices.forEach((voice) => { try { voice.stop(); } catch { /* Already ended. */ } });
+  activeVoices.forEach((voice) => {
+    try {
+      voice.stop();
+    } catch {
+      /* Already ended. */
+    }
+  });
   activeVoices.clear();
 }
 
@@ -20,7 +30,13 @@ function midiToFrequency(midi: number) {
   return 440 * Math.pow(2, (midi - 69) / 12);
 }
 
-function createVoice(ctx: AudioContext, frequency: number, when: number, duration: number, gainValue: number) {
+function createVoice(
+  ctx: AudioContext,
+  frequency: number,
+  when: number,
+  duration: number,
+  gainValue: number,
+) {
   const oscA = ctx.createOscillator();
   const oscB = ctx.createOscillator();
   const gain = ctx.createGain();
@@ -40,7 +56,10 @@ function createVoice(ctx: AudioContext, frequency: number, when: number, duratio
 
   gain.gain.setValueAtTime(0.0001, when);
   gain.gain.exponentialRampToValueAtTime(gainValue, when + 0.06);
-  gain.gain.exponentialRampToValueAtTime(gainValue * 0.72, when + duration * 0.55);
+  gain.gain.exponentialRampToValueAtTime(
+    gainValue * 0.72,
+    when + duration * 0.55,
+  );
   gain.gain.exponentialRampToValueAtTime(0.0001, when + duration);
 
   oscA.connect(filter);
@@ -55,7 +74,10 @@ function createVoice(ctx: AudioContext, frequency: number, when: number, duratio
     oscillator.onended = () => {
       activeVoices.delete(oscillator);
       oscillator.disconnect();
-      if (!activeVoices.has(oscA) && !activeVoices.has(oscB)) { filter.disconnect(); gain.disconnect(); }
+      if (!activeVoices.has(oscA) && !activeVoices.has(oscB)) {
+        filter.disconnect();
+        gain.disconnect();
+      }
     };
   }
   oscA.stop(when + duration + 0.05);
@@ -73,8 +95,20 @@ export async function ensureAudioReady() {
 export async function playNote(note: string, octave = 4, duration = 1.0) {
   const ctx = await ensureAudioReady();
   const now = ctx.currentTime + 0.02;
-  createVoice(ctx, midiToFrequency(midiFromNote(note, octave)), now, duration, 0.05);
-  createVoice(ctx, midiToFrequency(midiFromNote(note, octave + 1)), now, duration * 0.8, 0.025);
+  createVoice(
+    ctx,
+    midiToFrequency(midiFromNote(note, octave)),
+    now,
+    duration,
+    0.05,
+  );
+  createVoice(
+    ctx,
+    midiToFrequency(midiFromNote(note, octave + 1)),
+    now,
+    duration * 0.8,
+    0.025,
+  );
 }
 
 export async function playChord(chord: HarmonicChord, duration = 1.55) {
@@ -82,8 +116,28 @@ export async function playChord(chord: HarmonicChord, duration = 1.55) {
   const now = ctx.currentTime + 0.02;
 
   chord.notes.forEach((note, index) => {
-    createVoice(ctx, midiToFrequency(midiFromNote(note, index === 0 ? 3 : 4)), now + index * 0.015, duration, 0.045);
+    createVoice(
+      ctx,
+      midiToFrequency(midiFromNote(note, index === 0 ? 3 : 4)),
+      now + index * 0.015,
+      duration,
+      0.045,
+    );
   });
+}
+
+export async function playMidiNotes(notes: number[]) {
+  const ctx = await ensureAudioReady();
+  stopAudio();
+  notes.forEach((midi, index) =>
+    createVoice(
+      ctx,
+      midiToFrequency(midi),
+      ctx.currentTime + 0.03 + index * 0.025,
+      1.6,
+      0.12 / Math.max(1, notes.length),
+    ),
+  );
 }
 
 export async function playModeSweep(context: ModalContext) {
@@ -91,10 +145,22 @@ export async function playModeSweep(context: ModalContext) {
   stopAudio();
   const now = ctx.currentTime + 0.02;
 
-  createVoice(ctx, midiToFrequency(midiFromNote(context.tonic, 3)), now, 2, 0.04);
+  createVoice(
+    ctx,
+    midiToFrequency(midiFromNote(context.tonic, 3)),
+    now,
+    2,
+    0.04,
+  );
 
   [...context.modeSemitones, 12].forEach((step, index) => {
-    createVoice(ctx, midiToFrequency(midiFromNote(context.tonic, 3) + step), now + index * 0.28, 0.65, 0.035);
+    createVoice(
+      ctx,
+      midiToFrequency(midiFromNote(context.tonic, 3) + step),
+      now + index * 0.28,
+      0.65,
+      0.035,
+    );
   });
 }
 
@@ -111,7 +177,7 @@ export async function playProgression(progress: ProgressionPlayback) {
         midiToFrequency(midiFromNote(note, noteIndex === 0 ? 3 : 4)),
         when + noteIndex * 0.012,
         0.7,
-        0.038
+        0.038,
       );
     });
   });

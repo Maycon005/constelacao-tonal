@@ -1,8 +1,16 @@
-import { Volume2, Sparkles, Telescope, Waves, RotateCcw, SplitSquareVertical } from "lucide-react";
+import {
+  Volume2,
+  Sparkles,
+  Telescope,
+  Waves,
+  RotateCcw,
+  SplitSquareVertical,
+} from "lucide-react";
 import { FAMILIES, NOTES, VIEW_OPTIONS } from "../data/modalFamilies";
 import type { FamilyId, SelectionState, ViewId } from "../types/music";
 
 interface ControlBarProps {
+  compact?: boolean;
   selection: SelectionState;
   onSelectionChange: (next: SelectionState) => void;
   view: ViewId;
@@ -22,6 +30,7 @@ interface ControlBarProps {
 }
 
 export function ControlBar({
+  compact = false,
   selection,
   onSelectionChange,
   view,
@@ -37,12 +46,14 @@ export function ControlBar({
   onReset,
   audioEnabled,
   onEnableAudio,
-  onPlayMode
+  onPlayMode,
 }: ControlBarProps) {
   const familyModes = FAMILIES[selection.family].modes;
 
   return (
-    <header className="explorer-toolbar">
+    <header
+      className={`explorer-toolbar ${compact ? "instrument-toolbar" : ""}`}
+    >
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div className="max-w-4xl">
@@ -51,15 +62,24 @@ export function ControlBar({
               Mesma colecao, novo sol.
             </h1>
             <p className="mt-3 max-w-3xl text-base leading-relaxed text-slate-300 md:text-xl">
-              Veja a geometria permanecer enquanto a tonica redefine repouso, funcao, tensao e cor modal.
+              Veja a geometria permanecer enquanto a tonica redefine repouso,
+              funcao, tensao e cor modal.
             </p>
           </div>
 
           <div className="grid grid-cols-1 gap-2 text-xs text-slate-300 md:grid-cols-2 2xl:grid-cols-4">
-            <div className="data-chip">Hover nas notas revela grau, intervalo e funcao.</div>
-            <div className="data-chip">Autoplay desliza a gravidade tonal pela mesma colecao.</div>
-            <div className="data-chip">Comparacao mostra o que permanece e o que muda.</div>
-            <div className="data-chip">Ouça a nova tônica sem mudar a coleção de notas.</div>
+            <div className="data-chip">
+              Hover nas notas revela grau, intervalo e funcao.
+            </div>
+            <div className="data-chip">
+              Autoplay desliza a gravidade tonal pela mesma colecao.
+            </div>
+            <div className="data-chip">
+              Comparacao mostra o que permanece e o que muda.
+            </div>
+            <div className="data-chip">
+              Ouça a nova tônica sem mudar a coleção de notas.
+            </div>
           </div>
         </div>
 
@@ -73,7 +93,7 @@ export function ControlBar({
                 onSelectionChange({
                   family: event.target.value as FamilyId,
                   tonic: selection.tonic,
-                  modeIndex: 0
+                  modeIndex: 0,
                 })
               }
             >
@@ -86,18 +106,31 @@ export function ControlBar({
           </label>
 
           <label className="flex flex-col gap-1">
-            <span className="panel-label">Tonica</span>
-            <select
-              className="soft-input"
-              value={selection.tonic}
-              onChange={(event) => onSelectionChange({ ...selection, tonic: event.target.value })}
-            >
+            <span className="panel-label">Tônica · {selection.tonic}</span>
+            <input
+              aria-label="Tônica principal"
+              type="range"
+              min={0}
+              max={11}
+              step={1}
+              value={NOTES.indexOf(selection.tonic)}
+              onChange={(event) =>
+                onSelectionChange({
+                  ...selection,
+                  tonic: NOTES[Number(event.target.value)],
+                })
+              }
+            />
+            <span className="tonic-ticks" aria-hidden="true">
               {NOTES.map((note) => (
-                <option key={note} value={note}>
+                <span
+                  key={note}
+                  className={note === selection.tonic ? "selected" : ""}
+                >
                   {note}
-                </option>
+                </span>
               ))}
-            </select>
+            </span>
           </label>
 
           <label className="flex flex-col gap-1">
@@ -106,7 +139,10 @@ export function ControlBar({
               className="soft-input"
               value={selection.modeIndex}
               onChange={(event) =>
-                onSelectionChange({ ...selection, modeIndex: Number(event.target.value) })
+                onSelectionChange({
+                  ...selection,
+                  modeIndex: Number(event.target.value),
+                })
               }
             >
               {familyModes.map((mode, index) => (
@@ -117,12 +153,18 @@ export function ControlBar({
             </select>
           </label>
 
-          <button className="soft-button flex items-center justify-center gap-2" onClick={onToggleAutoplay}>
+          <button
+            className="soft-button flex items-center justify-center gap-2"
+            onClick={onToggleAutoplay}
+          >
             <Sparkles size={16} />
             {autoplay ? "Autoplay ativo" : "Autoplay modal"}
           </button>
 
-          <button className="soft-button flex items-center justify-center gap-2" onClick={onToggleAnimations}>
+          <button
+            className="soft-button flex items-center justify-center gap-2"
+            onClick={onToggleAnimations}
+          >
             <Waves size={16} />
             {animations ? "Animacoes on" : "Animacoes off"}
           </button>
@@ -157,13 +199,21 @@ export function ControlBar({
             onClick={onToggleCharacteristic}
           >
             <Telescope size={16} />
-            {highlightCharacteristic ? "Graus caracteristicos em foco" : "Destacar grau caracteristico"}
+            {highlightCharacteristic
+              ? "Graus caracteristicos em foco"
+              : "Destacar grau caracteristico"}
           </button>
-          <button className="soft-button flex items-center gap-2" onClick={audioEnabled ? onPlayMode : onEnableAudio}>
+          <button
+            className="soft-button flex items-center gap-2"
+            onClick={audioEnabled ? onPlayMode : onEnableAudio}
+          >
             <Volume2 size={16} />
             {audioEnabled ? "Ouvir modo atual" : "Ativar audio"}
           </button>
-          <button className="soft-button flex items-center gap-2" onClick={onReset}>
+          <button
+            className="soft-button flex items-center gap-2"
+            onClick={onReset}
+          >
             <RotateCcw size={16} />
             Reiniciar exploração
           </button>
