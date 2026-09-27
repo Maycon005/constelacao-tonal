@@ -42,7 +42,7 @@ export function ControlBar({
   const familyModes = FAMILIES[selection.family].modes;
 
   return (
-    <header className="glass-panel rounded-[32px] px-5 py-5 md:px-7 md:py-6">
+    <header className="explorer-toolbar">
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div className="max-w-4xl">

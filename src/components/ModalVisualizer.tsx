@@ -183,45 +183,10 @@ export function ModalVisualizer({
 
     return (
       <>
-        <motion.ellipse
-          cx={tonicNode.x}
-          cy={tonicNode.y}
-          rx={260}
-          ry={220}
-          fill="rgba(122,247,207,0.035)"
-          animate={animations ? { rx: [248, 268, 248], ry: [212, 228, 212] } : undefined}
-          transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.circle
-          cx={tonicNode.x}
-          cy={tonicNode.y}
-          r={240}
-          fill="rgba(122,247,207,0.05)"
-          animate={animations ? { r: [228, 246, 228], opacity: [0.06, 0.11, 0.06] } : undefined}
-          transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.circle
-          cx={tonicNode.x}
-          cy={tonicNode.y}
-          r={176}
-          fill="rgba(122,247,207,0.07)"
-          animate={animations ? { r: [166, 184, 166], opacity: [0.08, 0.13, 0.08] } : undefined}
-          transition={{ duration: 2.9, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <circle cx={tonicNode.x} cy={tonicNode.y} r={116} fill="rgba(122,247,207,0.08)" />
-        <path
-          d={`M ${tonicNode.x - 220} ${tonicNode.y - 110} C ${tonicNode.x - 80} ${tonicNode.y - 210}, ${tonicNode.x + 60} ${tonicNode.y - 210}, ${tonicNode.x + 210} ${tonicNode.y - 90}`}
-          fill="none"
-          stroke="rgba(122,247,207,0.10)"
-          strokeWidth={1.4}
-        />
-        <path
-          d={`M ${tonicNode.x - 210} ${tonicNode.y + 90} C ${tonicNode.x - 30} ${tonicNode.y + 200}, ${tonicNode.x + 100} ${tonicNode.y + 190}, ${tonicNode.x + 220} ${tonicNode.y + 70}`}
-          fill="none"
-          stroke="rgba(122,247,207,0.08)"
-          strokeWidth={1.2}
-        />
-        {context.collectionPcs
+        <motion.circle cx={tonicNode.x} cy={tonicNode.y} r={54}
+          fill="none" stroke="rgba(141,247,198,0.3)" strokeWidth={1.5}
+          animate={animations ? { r: [44, 75, 44], opacity: [.55, .08, .55] } : undefined}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} />        {context.collectionPcs
           .filter((pc) => pc !== context.tonicPc)
           .map((pc) => {
             const point = outerPositions[pc];
@@ -281,20 +246,20 @@ export function ModalVisualizer({
   };
 
   return (
-    <section className="glass-panel relative overflow-hidden rounded-[32px] p-4">
+    <section className="orbital-stage relative overflow-hidden">
       <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 h-full w-full opacity-85" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(88,221,255,0.09),transparent_58%)]" />
 
-      <div className="relative z-10 mb-3 rounded-[24px] border border-cyan-400/15 bg-slate-950/45 px-4 py-3">
+      <div className="orbit-controls relative z-10">
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <div className="panel-label mb-1">Percurso do foco principal sobre a roda</div>
+              <div className="panel-label mb-1">01 / PRINCIPAL · {context.tonic} {context.mode.name}</div>
               <div className="text-sm text-slate-300">
-                Deslize aqui e observe a mesma constelacao ganhar outro centro tonal em tempo real.
+                Mesmas notas. Escolha onde repousar.
               </div>
             </div>
-            <div className="min-w-[320px] flex-1 lg:max-w-[520px]">
+            <div className="min-w-0 flex-1 lg:max-w-[520px]">
               <input
                 className="w-full accent-cyan-400"
                 type="range"
@@ -310,12 +275,12 @@ export function ModalVisualizer({
           {compare ? (
             <div className="flex flex-col gap-3 border-t border-white/10 pt-3 lg:flex-row lg:items-center lg:justify-between">
               <div>
-                <div className="panel-label mb-1 text-fuchsia-200/80">Comparador livre sobre a roda</div>
+                <div className="panel-label mb-1 text-fuchsia-200/80">02 / COMPARAÇÃO INDEPENDENTE</div>
                 <div className="text-sm text-slate-300">
                   {compareContext.family.name} · {compareSelection.tonic} {compareContext.mode.name}
                 </div>
               </div>
-              <div className="min-w-[320px] flex-1 lg:max-w-[520px]">
+              <div className="min-w-0 flex-1 lg:max-w-[520px]">
                 <input
                   className="w-full accent-fuchsia-400"
                   type="range"
@@ -333,7 +298,7 @@ export function ModalVisualizer({
 
       <motion.svg
         viewBox={`40 40 920 920`}
-        className="relative z-10 aspect-square w-full"
+        className="orbit-diagram relative z-10"
         aria-label={`Roda cromatica: ${context.tonic} ${context.mode.name}`}
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -363,7 +328,7 @@ export function ModalVisualizer({
 
         <path
           d={polygonPath(outerPositions, context.collectionPcs)}
-          fill="rgba(105,146,255,0.10)"
+          fill="rgba(105,146,255,0.025)"
           stroke="url(#polygon-gradient)"
           strokeWidth={4}
           filter="url(#soft-glow)"
@@ -372,7 +337,7 @@ export function ModalVisualizer({
         {compare ? (
           <path
             d={polygonPath(outerPositions, compareContext.collectionPcs)}
-            fill="rgba(203,124,255,0.05)"
+            fill="none"
             stroke={collectionShared ? "rgba(203,124,255,0.78)" : "rgba(255,139,199,0.74)"}
             strokeDasharray="8 6"
             strokeWidth={2.4}
@@ -464,7 +429,7 @@ export function ModalVisualizer({
                 x={position.x}
                 y={position.y + 4}
                 textAnchor="middle"
-                fontSize={view === "harmony" ? 26 : 23}
+                fontSize={view === "harmony" ? 28 : 27}
                 fontWeight={700}
                 fill={inCollection ? "#f8fbff" : "#7080a8"}
               >
@@ -489,67 +454,22 @@ export function ModalVisualizer({
 
         <g transform={`translate(${CENTER}, ${CENTER})`}>
           <circle r={94} fill="rgba(10,16,32,0.86)" stroke="rgba(255,255,255,0.12)" />
-          <text y={-16} textAnchor="middle" fontSize={16} fill="#f8fbff" letterSpacing={1.1}>
+          <text y={-16} textAnchor="middle" fontSize={25} fill="#f8fbff" letterSpacing={1.1}>
             {context.tonic} {context.mode.name}
           </text>
           <text y={8} textAnchor="middle" fontSize={11} fill="#98a7d8">
             {context.family.name}
           </text>
-          <text y={28} textAnchor="middle" fontSize={10} fill="#8df7c6">
+          <text y={28} textAnchor="middle" fontSize={17} fill="#8df7c6">
             Centro tonal: {context.tonic}
           </text>
         </g>
       </motion.svg>
 
-      <div className="relative z-10 mt-3 grid gap-3 lg:grid-cols-3">
-        <div className="data-chip">
-          <div className="panel-label mb-1">Colecao</div>
-          <div>{context.collectionNotes.join(" - ")}</div>
-        </div>
-        <div className="data-chip">
-          <div className="panel-label mb-1">Diagnostico modal</div>
-          <div>
-            {compare && collectionShared
-              ? "A geometria permaneceu; a hierarquia mudou."
-              : `O repouso atual orbita em torno de ${context.tonic}.`}
-          </div>
-        </div>
-        <div className="data-chip">
-          <div className="panel-label mb-1">Microexplicacao</div>
-          <div>
-            {view === "gravity"
-              ? "A aura e os fluxos mostram para onde o sistema quer resolver."
-              : view === "function"
-                ? "As mesmas notas recebem novos papeis quando o centro tonal muda."
-                : view === "harmony"
-                  ? "O campo harmonico traduz a colecao em centros de funcao."
-                  : "A constelacao fixa ajuda a ver a relatividade modal com os olhos."}
-          </div>
-        </div>
-      </div>
-
-      {compare ? (
-        <div className="relative z-10 mt-3 grid gap-3 lg:grid-cols-2">
-          <div className="data-chip border-cyan-400/25">
-            <div className="panel-label mb-1 text-cyan-200/80">Camada principal</div>
-            <div>{context.tonic} {context.mode.name} - {context.modeNotes.join(" - ")}</div>
-          </div>
-          <div className="data-chip border-fuchsia-400/25">
-            <div className="panel-label mb-1 text-fuchsia-200/80">Comparador livre</div>
-            <div>{compareContext.tonic} {compareContext.mode.name} - {compareContext.modeNotes.join(" - ")}</div>
-          </div>
-        </div>
-      ) : null}
-
-      <div className="relative z-10 mt-3 grid gap-3 lg:grid-cols-2">
-        <div className="data-chip border-cyan-400/20">
-          <div className="panel-label mb-1 text-cyan-200/80">Par de destaque da colecao</div>
-          <div>{pairedContext.tonic} {pairedContext.mode.name} - {pairedContext.modeNotes.join(" - ")}</div>
-        </div>
-        <div className="data-chip">
-          <div className="panel-label mb-1">Legenda visual</div>
-          <div>Linha solida azul = foco principal. Traco magenta = comparador livre.</div>
-        </div>
+      <div className="orbit-caption relative z-10">
+        <span><i className="legend-dot" /> Principal: {context.tonic} {context.mode.name}</span>
+        {compare && <span><i className="legend-dot comparison" /> Comparação: {compareContext.tonic} {compareContext.mode.name}</span>}
+        <strong>{compare ? collectionShared ? "7 notas em comum · mesma geometria" : "Coleções diferentes" : context.collectionNotes.join(" · ")}</strong>
       </div>
     </section>
   );

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { Play } from "lucide-react";
 import { functionColor, progressionPlayback } from "../lib/music";
 import type { HarmonicChord, ModalContext } from "../types/music";
@@ -22,11 +23,15 @@ export function InfoPanel({
   onModePlay,
   onProgressionPlay
 }: InfoPanelProps) {
+  const [tab, setTab] = useState<"notes" | "chords" | "about">("notes");
   const pinnedDegree = pinnedNote ? context.degrees.find((degree) => degree.note === pinnedNote) : null;
   const progressionPreview = hoveredChord ? null : progressionPlayback(context, context.progressions[0] ?? "");
 
   return (
-    <aside className="glass-panel rounded-[28px] p-4 md:p-5">
+    <aside className={`inspector-panel inspector-${tab}`}>
+      <nav className="inspector-tabs" aria-label="Detalhes do modo">
+        {([{ id: "notes", label: "Notas & graus" }, { id: "chords", label: "Acordes" }, { id: "about", label: "Entender" }] as const).map(item => <button key={item.id} aria-pressed={tab === item.id} onClick={() => setTab(item.id)}>{item.label}</button>)}
+      </nav>
       <motion.div
         key={`${context.tonic}-${context.mode.name}`}
         initial={{ opacity: 0, y: 10 }}

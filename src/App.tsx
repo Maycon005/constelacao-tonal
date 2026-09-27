@@ -172,7 +172,7 @@ function App() {
           onPlayMode={handlePlayMode}
         />
 
-        <div className="grid gap-5 xl:grid-cols-[1.55fr_0.85fr]">
+        <div className="observatory-layout">
           <ModalVisualizer
             context={context}
             pairedContext={pairedContext}
