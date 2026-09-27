@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { functionColor, sameCollection } from "../lib/music";
 import type { ModalContext, SelectionState, TooltipState, ViewId } from "../types/music";
 
@@ -83,6 +83,19 @@ export function ModalVisualizer({
   onCompareRelativeIndexChange
 }: ModalVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const diagramRef = useRef<SVGSVGElement | null>(null);
+  const [labelScale, setLabelScale] = useState(2);
+  useEffect(() => {
+    const svg = diagramRef.current;
+    if (!svg) return;
+    const observer = new ResizeObserver(() => {
+      const bounds = svg.getBoundingClientRect();
+      const size = Math.min(bounds.width, bounds.height);
+      if (size > 0) setLabelScale(920 / size);
+    });
+    observer.observe(svg);
+    return () => observer.disconnect();
+  }, []);
   const outerPositions = positions();
   const harmonyPositions = innerHarmonyPositions();
   const collectionShared = sameCollection(context, compareContext);
@@ -297,6 +310,7 @@ export function ModalVisualizer({
       </div>
 
       <motion.svg
+        ref={diagramRef}
         viewBox={`40 40 920 920`}
         className="orbit-diagram relative z-10"
         aria-label={`Roda cromatica: ${context.tonic} ${context.mode.name}`}
@@ -358,18 +372,9 @@ export function ModalVisualizer({
             highlightCharacteristic &&
             Boolean(degree && context.characteristicDegrees.some((target) => degree.degreeLabel === target));
 
-          const radius = isTonic ? 20 : isPinned ? 16 : isCharacteristic ? 14 : inCollection ? 11.5 : 7.5;
+          const radius = (isTonic || isPinned ? 23 : 20) * labelScale;
           const nodeStroke =
             view === "function" && degree ? functionColor(degree.functionKind) : isCharacteristic ? "#ffd071" : "#8ab6ff";
-          const nodeFill =
-            view === "function" && degree
-              ? `${functionColor(degree.functionKind)}66`
-              : isTonic
-                ? "rgba(141,247,198,0.24)"
-                : inCollection
-                  ? "rgba(105,146,255,0.20)"
-                  : "rgba(124,132,162,0.12)";
-
           return (
             <g
               key={noteName}
@@ -385,7 +390,7 @@ export function ModalVisualizer({
               style={{ cursor: "pointer" }}
               onMouseMove={(event) => {
                 if (!degree) {
-                  onTooltipChange(null);
+                  onTooltipChange({ x: event.clientX, y: event.clientY, title: noteName, lines: ["Fora da escala principal", "Clique para ouvir esta nota cromática."] });
                   return;
                 }
                 onTooltipChange({
@@ -421,36 +426,25 @@ export function ModalVisualizer({
                 cx={position.x}
                 cy={position.y}
                 r={radius}
-                fill={nodeFill}
-                stroke={nodeStroke}
+                fill="#0b1420"
+                stroke={inCollection ? nodeStroke : "#64748b"}
+                strokeDasharray={inCollection ? undefined : "4 3"}
                 strokeWidth={isTonic ? 2.7 : 1.8}
               />
               <text
                 x={position.x}
-                y={position.y + 4}
+                y={position.y}
+                dominantBaseline="central"
                 textAnchor="middle"
-                fontSize={view === "harmony" ? 28 : 27}
+                fontSize={17 * labelScale}
                 fontWeight={700}
-                fill={inCollection ? "#f8fbff" : "#7080a8"}
+                fill={inCollection ? "#ffffff" : "#cbd5e1"}
               >
                 {noteName}
               </text>
             </g>
           );
         })}
-
-        {outerPositions.map((position, index) => (
-          <text
-            key={`pc-${index}`}
-            x={position.x}
-            y={position.y - 26}
-            textAnchor="middle"
-            fontSize={view === "harmony" ? 16 : 11}
-            fill="rgba(176,188,221,0.56)"
-          >
-            {index}
-          </text>
-        ))}
 
         <g transform={`translate(${CENTER}, ${CENTER})`}>
           <circle r={94} fill="rgba(10,16,32,0.86)" stroke="rgba(255,255,255,0.12)" />
@@ -467,7 +461,7 @@ export function ModalVisualizer({
       </motion.svg>
 
       <div className="orbit-caption relative z-10">
-        <span><i className="legend-dot" /> Principal: {context.tonic} {context.mode.name}</span>
+        <span><i className="legend-dot" /> Principal: {context.tonic} {context.mode.name} · círculos tracejados: fora da escala</span>
         {compare && <span><i className="legend-dot comparison" /> Comparação: {compareContext.tonic} {compareContext.mode.name}</span>}
         <strong>{compare ? collectionShared ? "7 notas em comum · mesma geometria" : "Coleções diferentes" : context.collectionNotes.join(" · ")}</strong>
       </div>
